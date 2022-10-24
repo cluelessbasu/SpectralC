@@ -141,7 +141,7 @@ TriangleInfo2 cleaner(CGraph gout, int *degree, float eps, std::vector<std::vect
    ret.total = 0;      // initialize outout
    ret.perVertex = new Count[gout->nVertices+1];
    ret.perEdge = new Count[gout->nEdges+1]; 
-   float weight
+   float weight;
 
    for (VertexIdx i=0; i < gout->nVertices; ++i)
        ret.perVertex[i] = 0;
@@ -177,7 +177,7 @@ TriangleInfo2 cleaner(CGraph gout, int *degree, float eps, std::vector<std::vect
                }
 
                if (ret.perEdge[k]< eps/(degree[end1]*degree[end2])){
-                   edgeFlag[k] = 0;
+                   //edgeFlag[k] = 0;
                    for (EdgeIdx l = gout->trioffsets[k]; l<gout->trioffsets[k+1]; ++l)
                    {
                         //triFlag[l] = 0;
@@ -336,7 +336,7 @@ std::set <VertexIdx> extractor(CGraph gout, int *degree, float eps, TriangleInfo
                                     }
 
                             for (i = 0; i<adj.size(); ++i){
-                                for (vert = 0; vert<out.size(); ++vert){
+                                for (long long int vert = 0; vert<out.size(); ++vert){
                                     v = out[vert];
                                     if (adj[i].find(v)! = adj[i].end()){
                                         adj[i].remove(v);

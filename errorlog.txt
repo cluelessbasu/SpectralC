@@ -17,12 +17,6 @@ Triadic.h:142:34: error: base operand of ‘->’ has non-pointer type ‘Escape
 Triadic.h:143:32: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
   143 |    ret.perEdge = new Count[gout->nEdges+1];
       |                                ^~
-Triadic.h:146:4: error: expected initializer before ‘for’
-  146 |    for (VertexIdx i=0; i < gout->nVertices; ++i)
-      |    ^~~
-Triadic.h:146:24: error: ‘i’ was not declared in this scope
-  146 |    for (VertexIdx i=0; i < gout->nVertices; ++i)
-      |                        ^
 Triadic.h:146:32: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
   146 |    for (VertexIdx i=0; i < gout->nVertices; ++i)
       |                                ^~
@@ -50,12 +44,6 @@ Triadic.h:160:27: error: base operand of ‘->’ has non-pointer type ‘Escape
 Triadic.h:164:26: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
   164 |                loc = gout->getEdgeBinary(end1,end2);
       |                          ^~
-Triadic.h:168:20: error: ‘weight’ was not declared in this scope
-  168 |                    weight = 1/(degree[i]*degree[end1]*degree[end2]);
-      |                    ^~~~~~
-Triadic.h:180:20: error: ‘edgeFlag’ was not declared in this scope
-  180 |                    edgeFlag[k] = 0;
-      |                    ^~~~~~~~
 Triadic.h:181:41: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
   181 |                    for (EdgeIdx l = gout->trioffsets[k]; l<gout->trioffsets[k+1]; ++l)
       |                                         ^~
@@ -179,9 +167,9 @@ Triadic.h:322:52: error: base operand of ‘->’ has non-pointer type ‘Escape
 Triadic.h:323:52: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
   323 |                                         loc3 = gout->getEdgeBinary(c,d);
       |                                                    ^~
-Triadic.h:339:38: error: ‘vert’ was not declared in this scope
-  339 |                                 for (vert = 0; vert<out.size(); ++vert){
-      |                                      ^~~~
+Triadic.h:340:44: error: no match for ‘operator[]’ (operand types are ‘std::set<long long int>’ and ‘long long int’)
+  340 |                                     v = out[vert];
+      |                                            ^
 Triadic.h:341:48: error: ‘__gnu_cxx::__alloc_traits<std::allocator<std::vector<long long int> >, std::vector<long long int> >::value_type’ {aka ‘class std::vector<long long int>’} has no member named ‘find’
   341 |                                     if (adj[i].find(v)! = adj[i].end()){
       |                                                ^~~~

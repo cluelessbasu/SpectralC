@@ -1,6 +1,6 @@
 #include "ErrorCode.h"
 
-//#ifndef GRAPHIO_H__
+#ifndef GRAPHIO_H__
 #define GRAPHIO_H__
 
 //Some utilities for loading graph data

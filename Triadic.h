@@ -1,4 +1,4 @@
-//ifndef ESCAPE_TRIADIC_H_
+#ifndef ESCAPE_TRIADIC_H_
 #define ESCAPE_TRIADIC_H_
 
 #include "ErrorCode.h"

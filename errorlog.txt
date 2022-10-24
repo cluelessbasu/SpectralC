@@ -1,0 +1,321 @@
+In file included from Triadic.h:6,
+                 from main.cpp:5:
+Digraph.h:307:2: error: #endif without #if
+  307 | #endif
+      |  ^~~~~
+In file included from main.cpp:5:
+Triadic.h:734:2: error: #endif without #if
+  734 | #endif
+      |  ^~~~~
+In file included from main.cpp:6:
+Digraph.h:307:2: error: #endif without #if
+  307 | #endif
+      |  ^~~~~
+In file included from main.cpp:8:
+Digraph.h:307:2: error: #endif without #if
+  307 | #endif
+      |  ^~~~~
+In file included from main.cpp:9:
+GraphIO.h:33:2: error: #endif without #if
+   33 | #endif
+      |  ^~~~~
+In file included from main.cpp:5:
+Triadic.h: In function ‘TriangleInfo wedgeEnumerator(Escape::CGraph*)’:
+Triadic.h:79:20: error: cannot convert ‘Escape::Count*’ {aka ‘float*’} to ‘long long int*’ in assignment
+   79 |    ret.perVertex = new Count[g->nVertices+1];
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~
+      |                    |
+      |                    Escape::Count* {aka float*}
+Triadic.h:80:18: error: cannot convert ‘Escape::Count*’ {aka ‘float*’} to ‘long long int*’ in assignment
+   80 |    ret.perEdge = new Count[g->nEdges+1];
+      |                  ^~~~~~~~~~~~~~~~~~~~~~
+      |                  |
+      |                  Escape::Count* {aka float*}
+Triadic.h: In function ‘TriangleInfo2 cleaner(Escape::CGraph, int*, float, std::vector<std::vector<long long int> >&)’:
+Triadic.h:142:34: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  142 |    ret.perVertex = new Count[gout->nVertices+1];
+      |                                  ^~
+Triadic.h:143:32: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  143 |    ret.perEdge = new Count[gout->nEdges+1];
+      |                                ^~
+Triadic.h:146:4: error: expected initializer before ‘for’
+  146 |    for (VertexIdx i=0; i < gout->nVertices; ++i)
+      |    ^~~
+Triadic.h:146:24: error: ‘i’ was not declared in this scope
+  146 |    for (VertexIdx i=0; i < gout->nVertices; ++i)
+      |                        ^
+Triadic.h:146:32: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  146 |    for (VertexIdx i=0; i < gout->nVertices; ++i)
+      |                                ^~
+Triadic.h:149:30: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  149 |    for (EdgeIdx j=0; j < gout->nEdges; ++j)
+      |                              ^~
+Triadic.h:155:32: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  155 |    for (VertexIdx i=0; i < gout->nVertices; ++i) // loop over vertices
+      |                                ^~
+Triadic.h:156:29: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  156 |        for (EdgeIdx j = gout->offsets[i]; j < gout->offsets[i+1]; ++j)   // loop over neighbor of i
+      |                             ^~
+Triadic.h:156:51: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  156 |        for (EdgeIdx j = gout->offsets[i]; j < gout->offsets[i+1]; ++j)   // loop over neighbor of i
+      |                                                   ^~
+Triadic.h:157:42: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  157 |            for (EdgeIdx k = j+1; k < gout->offsets[i+1]; ++k)         // loop over another neighbor of i
+      |                                          ^~
+Triadic.h:159:27: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  159 |                end1 = gout->nbors[j];     // we are now looking at wedge (i, end1, end2), centered at i
+      |                           ^~
+Triadic.h:160:27: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  160 |                end2 = gout->nbors[k];
+      |                           ^~
+Triadic.h:164:26: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  164 |                loc = gout->getEdgeBinary(end1,end2);
+      |                          ^~
+Triadic.h:168:20: error: ‘weight’ was not declared in this scope
+  168 |                    weight = 1/(degree[i]*degree[end1]*degree[end2]);
+      |                    ^~~~~~
+Triadic.h:180:20: error: ‘edgeFlag’ was not declared in this scope
+  180 |                    edgeFlag[k] = 0;
+      |                    ^~~~~~~~
+Triadic.h:181:41: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  181 |                    for (EdgeIdx l = gout->trioffsets[k]; l<gout->trioffsets[k+1]; ++l)
+      |                                         ^~
+Triadic.h:181:64: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  181 |                    for (EdgeIdx l = gout->trioffsets[k]; l<gout->trioffsets[k+1]; ++l)
+      |                                                                ^~
+Triadic.h:184:35: error: ‘__gnu_cxx::__alloc_traits<std::allocator<std::vector<long long int> >, std::vector<long long int> >::value_type’ {aka ‘class std::vector<long long int>’} has no member named ‘remove’
+  184 |                         adj[end1].remove(end2);
+      |                                   ^~~~~~
+Triadic.h:185:35: error: ‘__gnu_cxx::__alloc_traits<std::allocator<std::vector<long long int> >, std::vector<long long int> >::value_type’ {aka ‘class std::vector<long long int>’} has no member named ‘remove’
+  185 |                         adj[end2].remove(end1);
+      |                                   ^~~~~~
+Triadic.h: In function ‘std::set<long long int> extractor(Escape::CGraph, int*, float, TriangleInfo2, Escape::VertexIdx&, std::vector<std::vector<long long int> >&)’:
+Triadic.h:222:37: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  222 |         for (VertexIdx l=0; l < gout->nVertices; ++l) // loop over vertices
+      |                                     ^~
+Triadic.h:230:46: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  230 |                         for (EdgeIdx j = gout->offsets[i]; j < gout->offsets[i+1]; ++j)   // loop over neighbor of i
+      |                                              ^~
+Triadic.h:230:68: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  230 |                         for (EdgeIdx j = gout->offsets[i]; j < gout->offsets[i+1]; ++j)   // loop over neighbor of i
+      |                                                                    ^~
+Triadic.h:232:37: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  232 |                             v = gout->nbors[j];
+      |                                     ^~
+Triadic.h:241:38: error: no match for ‘operator[]’ (operand types are ‘std::set<long long int>’ and ‘Escape::EdgeIdx’ {aka ‘long long int’})
+  241 |                             e1 = set1[j];
+      |                                      ^
+Triadic.h:242:37: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  242 |                             a = gout->nbors[e1];
+      |                                     ^~
+Triadic.h:252:41: error: no match for ‘operator[]’ (operand types are ‘std::set<long long int>’ and ‘Escape::VertexIdx’ {aka ‘long long int’})
+  252 |                                 i = set2[ii];
+      |                                         ^
+Triadic.h:253:54: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  253 |                                 for (EdgeIdx j = gout->offsets[i]; j < gout->offsets[i+1]; ++j)   // loop over neighbor of i
+      |                                                      ^~
+Triadic.h:253:76: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  253 |                                 for (EdgeIdx j = gout->offsets[i]; j < gout->offsets[i+1]; ++j)   // loop over neighbor of i
+      |                                                                            ^~
+Triadic.h:254:67: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  254 |                                     for (EdgeIdx k = j+1; k < gout->offsets[i+1]; ++k)         // loop over another neighbor of i
+      |                                                                   ^~
+Triadic.h:256:52: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  256 |                                         end1 = gout->nbors[j];     // we are now looking at wedge (i, end1, end2), centered at i
+      |                                                    ^~
+Triadic.h:257:52: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  257 |                                         end2 = gout->nbors[k];
+      |                                                    ^~
+Triadic.h:261:51: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  261 |                                         loc = gout->getEdgeBinary(end1,end2);
+      |                                                   ^~
+Triadic.h:262:56: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  262 |                                         triangle = gout->trioffsets[k];
+      |                                                        ^~
+Triadic.h:263:119: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  263 |                                         if (loc != -1 && set2.count(i) && set2.count(end1) && set2.count(end2) && gout->trioffsets[triangle])        // (end1, end2) is present
+      |                                                                                                                       ^~
+Triadic.h:265:45: error: ‘wt’ was not declared in this scope
+  265 |                                             wt = 1/(degree[i]*degree[end1]*degree[end2]);
+      |                                             ^~
+Triadic.h:267:66: error: ‘weight’ was not declared in this scope
+  267 |                                             ret.perVertex[ii] += weight; // update all per vertex counts
+      |                                                                  ^~~~~~
+Triadic.h:280:52: error: no match for ‘operator[]’ (operand types are ‘std::set<long long int>’ and ‘Escape::VertexIdx’ {aka ‘long long int’})
+  280 |                                 values[i][0] = set2[i];
+      |                                                    ^
+Triadic.h:283:65: error: no match for ‘operator[]’ (operand types are ‘std::set<long long int>’ and ‘Escape::VertexIdx’ {aka ‘long long int’})
+  283 |                                 incident +=  info.perVertex[set2[i]];
+      |                                                                 ^
+Triadic.h:298:69: error: invalid types ‘Escape::Count* {aka float*}[float]’ for array subscript
+  298 |                                 inside += ret.perVertex[values[i][1]];
+      |                                                                     ^
+Triadic.h:305:54: error: no matching function for call to ‘set_union(std::set<long long int>&, std::set<long long int>&)’
+  305 |                             out = set_union(set1, out);
+      |                                                      ^
+In file included from /usr/include/c++/9/algorithm:62,
+                 from main.cpp:1:
+/usr/include/c++/9/bits/stl_algo.h:5166:5: note: candidate: ‘template<class _IIter1, class _IIter2, class _OIter> _OIter std::set_union(_IIter1, _IIter1, _IIter2, _IIter2, _OIter)’
+ 5166 |     set_union(_InputIterator1 __first1, _InputIterator1 __last1,
+      |     ^~~~~~~~~
+/usr/include/c++/9/bits/stl_algo.h:5166:5: note:   template argument deduction/substitution failed:
+In file included from main.cpp:5:
+Triadic.h:305:54: note:   candidate expects 5 arguments, 2 provided
+  305 |                             out = set_union(set1, out);
+      |                                                      ^
+In file included from /usr/include/c++/9/algorithm:62,
+                 from main.cpp:1:
+/usr/include/c++/9/bits/stl_algo.h:5216:5: note: candidate: ‘template<class _IIter1, class _IIter2, class _OIter, class _Compare> _OIter std::set_union(_IIter1, _IIter1, _IIter2, _IIter2, _OIter, _Compare)’
+ 5216 |     set_union(_InputIterator1 __first1, _InputIterator1 __last1,
+      |     ^~~~~~~~~
+/usr/include/c++/9/bits/stl_algo.h:5216:5: note:   template argument deduction/substitution failed:
+In file included from main.cpp:5:
+Triadic.h:305:54: note:   candidate expects 6 arguments, 2 provided
+  305 |                             out = set_union(set1, out);
+      |                                                      ^
+Triadic.h:307:57: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  307 |                             for (VertexIdx i=0; i < gout->nVertices; ++i) // loop over vertices
+      |                                                         ^~
+Triadic.h:308:54: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  308 |                                 for (EdgeIdx j = gout->offsets[i]; j < gout->offsets[i+1]; ++j)   // loop over neighbor of i
+      |                                                      ^~
+Triadic.h:308:76: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  308 |                                 for (EdgeIdx j = gout->offsets[i]; j < gout->offsets[i+1]; ++j)   // loop over neighbor of i
+      |                                                                            ^~
+Triadic.h:309:67: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  309 |                                     for (EdgeIdx k = j+1; k < gout->offsets[i+1]; ++k)         // loop over another neighbor of i
+      |                                                                   ^~
+Triadic.h:311:52: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  311 |                                         end1 = gout->nbors[j];     // we are now looking at wedge (i, end1, end2), centered at i
+      |                                                    ^~
+Triadic.h:312:52: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  312 |                                         end2 = gout->nbors[k];
+      |                                                    ^~
+Triadic.h:321:52: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  321 |                                         loc1 = gout->getEdgeBinary(end1,end2);
+      |                                                    ^~
+Triadic.h:322:52: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  322 |                                         loc2 = gout->getEdgeBinary(a,b);
+      |                                                    ^~
+Triadic.h:323:52: error: base operand of ‘->’ has non-pointer type ‘Escape::CGraph’
+  323 |                                         loc3 = gout->getEdgeBinary(c,d);
+      |                                                    ^~
+Triadic.h:339:38: error: ‘vert’ was not declared in this scope
+  339 |                                 for (vert = 0; vert<out.size(); ++vert){
+      |                                      ^~~~
+Triadic.h:341:48: error: ‘__gnu_cxx::__alloc_traits<std::allocator<std::vector<long long int> >, std::vector<long long int> >::value_type’ {aka ‘class std::vector<long long int>’} has no member named ‘find’
+  341 |                                     if (adj[i].find(v)! = adj[i].end()){
+      |                                                ^~~~
+Triadic.h:341:55: error: expected ‘)’ before ‘!’ token
+  341 |                                     if (adj[i].find(v)! = adj[i].end()){
+      |                                        ~              ^
+      |                                                       )
+Triadic.h:342:48: error: ‘__gnu_cxx::__alloc_traits<std::allocator<std::vector<long long int> >, std::vector<long long int> >::value_type’ {aka ‘class std::vector<long long int>’} has no member named ‘remove’
+  342 |                                         adj[i].remove(v);
+      |                                                ^~~~~~
+Triadic.h:352:10: error: invalid type argument of unary ‘*’ (have ‘Escape::VertexIdx’ {aka ‘long long int’})
+  352 |         *count = *count - out.size();
+      |          ^~~~~
+Triadic.h:352:19: error: invalid type argument of unary ‘*’ (have ‘Escape::VertexIdx’ {aka ‘long long int’})
+  352 |         *count = *count - out.size();
+      |                   ^~~~~
+In file included from main.cpp:6:
+Digraph.h: At global scope:
+Digraph.h:12:8: error: redefinition of ‘struct CDAG’
+   12 | struct CDAG
+      |        ^~~~
+In file included from Triadic.h:6,
+                 from main.cpp:5:
+Digraph.h:12:8: note: previous definition of ‘struct CDAG’
+   12 | struct CDAG
+      |        ^~~~
+In file included from main.cpp:6:
+Digraph.h:21:8: error: redefinition of ‘struct DegreeComp’
+   21 | struct DegreeComp
+      |        ^~~~~~~~~~
+In file included from Triadic.h:6,
+                 from main.cpp:5:
+Digraph.h:21:8: note: previous definition of ‘struct DegreeComp’
+   21 | struct DegreeComp
+      |        ^~~~~~~~~~
+In file included from main.cpp:6:
+Digraph.h:53:7: error: redefinition of ‘Escape::Count degDist(Escape::CGraph*, Escape::VertexIdx*)’
+   53 | Count degDist(CGraph* g, VertexIdx* degdistarray)
+      |       ^~~~~~~
+In file included from Triadic.h:6,
+                 from main.cpp:5:
+Digraph.h:53:7: note: ‘Escape::Count degDist(Escape::CGraph*, Escape::VertexIdx*)’ previously defined here
+   53 | Count degDist(CGraph* g, VertexIdx* degdistarray)
+      |       ^~~~~~~
+In file included from main.cpp:6:
+Digraph.h:83:6: error: redefinition of ‘CDAG degreeOrdered(Escape::CGraph*)’
+   83 | CDAG degreeOrdered(CGraph *g)
+      |      ^~~~~~~~~~~~~
+In file included from Triadic.h:6,
+                 from main.cpp:5:
+Digraph.h:83:6: note: ‘CDAG degreeOrdered(Escape::CGraph*)’ previously defined here
+   83 | CDAG degreeOrdered(CGraph *g)
+      |      ^~~~~~~~~~~~~
+In file included from main.cpp:6:
+Digraph.h:146:6: error: redefinition of ‘CDAG degenOrdered(Escape::CGraph*)’
+  146 | CDAG degenOrdered(CGraph* g)
+      |      ^~~~~~~~~~~~
+In file included from Triadic.h:6,
+                 from main.cpp:5:
+Digraph.h:146:6: note: ‘CDAG degenOrdered(Escape::CGraph*)’ previously defined here
+  146 | CDAG degenOrdered(CGraph* g)
+      |      ^~~~~~~~~~~~
+In file included from main.cpp:8:
+Digraph.h:12:8: error: redefinition of ‘struct CDAG’
+   12 | struct CDAG
+      |        ^~~~
+In file included from Triadic.h:6,
+                 from main.cpp:5:
+Digraph.h:12:8: note: previous definition of ‘struct CDAG’
+   12 | struct CDAG
+      |        ^~~~
+In file included from main.cpp:8:
+Digraph.h:21:8: error: redefinition of ‘struct DegreeComp’
+   21 | struct DegreeComp
+      |        ^~~~~~~~~~
+In file included from Triadic.h:6,
+                 from main.cpp:5:
+Digraph.h:21:8: note: previous definition of ‘struct DegreeComp’
+   21 | struct DegreeComp
+      |        ^~~~~~~~~~
+In file included from main.cpp:8:
+Digraph.h:53:7: error: redefinition of ‘Escape::Count degDist(Escape::CGraph*, Escape::VertexIdx*)’
+   53 | Count degDist(CGraph* g, VertexIdx* degdistarray)
+      |       ^~~~~~~
+In file included from Triadic.h:6,
+                 from main.cpp:5:
+Digraph.h:53:7: note: ‘Escape::Count degDist(Escape::CGraph*, Escape::VertexIdx*)’ previously defined here
+   53 | Count degDist(CGraph* g, VertexIdx* degdistarray)
+      |       ^~~~~~~
+In file included from main.cpp:8:
+Digraph.h:83:6: error: redefinition of ‘CDAG degreeOrdered(Escape::CGraph*)’
+   83 | CDAG degreeOrdered(CGraph *g)
+      |      ^~~~~~~~~~~~~
+In file included from Triadic.h:6,
+                 from main.cpp:5:
+Digraph.h:83:6: note: ‘CDAG degreeOrdered(Escape::CGraph*)’ previously defined here
+   83 | CDAG degreeOrdered(CGraph *g)
+      |      ^~~~~~~~~~~~~
+In file included from main.cpp:8:
+Digraph.h:146:6: error: redefinition of ‘CDAG degenOrdered(Escape::CGraph*)’
+  146 | CDAG degenOrdered(CGraph* g)
+      |      ^~~~~~~~~~~~
+In file included from Triadic.h:6,
+                 from main.cpp:5:
+Digraph.h:146:6: note: ‘CDAG degenOrdered(Escape::CGraph*)’ previously defined here
+  146 | CDAG degenOrdered(CGraph* g)
+      |      ^~~~~~~~~~~~
+main.cpp: In function ‘int main(int, char**)’:
+main.cpp:76:73: error: expected primary-expression before ‘)’ token
+   76 |   std::vector<std::vector<VertexIdx>> adj(number, std::vector<VertexIdx>);
+      |                                                                         ^
+main.cpp:77:77: error: expected primary-expression before ‘)’ token
+   77 |   std::vector<std::vector<VertexIdx>> hashmap(number, std::vector<VertexIdx>);
+      |                                                                             ^
+main.cpp:126:33: error: request for member ‘size’ in ‘sources.std::vector<long long int>::operator[](0)’, which is of non-class type ‘__gnu_cxx::__alloc_traits<std::allocator<long long int>, long long int>::value_type’ {aka ‘long long int’}
+  126 |     g_temp.nEdges = &sources[0].size();

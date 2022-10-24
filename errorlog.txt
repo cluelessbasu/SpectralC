@@ -192,12 +192,6 @@ Triadic.h:341:55: error: expected ‘)’ before ‘!’ token
 Triadic.h:342:48: error: ‘__gnu_cxx::__alloc_traits<std::allocator<std::vector<long long int> >, std::vector<long long int> >::value_type’ {aka ‘class std::vector<long long int>’} has no member named ‘remove’
   342 |                                         adj[i].remove(v);
       |                                                ^~~~~~
-Triadic.h:352:10: error: invalid type argument of unary ‘*’ (have ‘Escape::VertexIdx’ {aka ‘long long int’})
-  352 |         *count = *count - out.size();
-      |          ^~~~~
-Triadic.h:352:19: error: invalid type argument of unary ‘*’ (have ‘Escape::VertexIdx’ {aka ‘long long int’})
-  352 |         *count = *count - out.size();
-      |                   ^~~~~
 main.cpp: In function ‘int main(int, char**)’:
 main.cpp:76:73: error: expected primary-expression before ‘)’ token
    76 |   std::vector<std::vector<VertexIdx>> adj(number, std::vector<VertexIdx>);

@@ -349,7 +349,7 @@ std::set <VertexIdx> extractor(CGraph gout, int *degree, float eps, TriangleInfo
         
             } 
             
-        *count = *count - out.size();
+        count = count - out.size();
         return out;  // possibly return the net incident triangle weight to reduce work later on: what about the edge list? 
 
 }

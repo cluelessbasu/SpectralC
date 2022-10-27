@@ -2,9 +2,9 @@
 #define ESCAPE_FIVE_FROM_TRIANGLES_H_
 
 
-#include "Escape/Utils.h"
-#include "Escape/FourVertex.h"
-#include "Escape/TriangleProgram.h"
+#include "Utils.h"
+#include "FourVertex.h"
+#include "TriangleProgram.h"
 
 namespace Escape
 {

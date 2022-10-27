@@ -2,13 +2,18 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "GraphIO.h"
+#include "Graph.h"
 #include "Triadic.h"
 #include "Digraph.h"
-#include "Graph.h"
 #include "Digraph.h"
-#include "GraphIO.h"
 #include <set>
 #include <list>
+#include <cstdlib>
+#include <cstdio>
+//#include "FourVertex.h"
+//#include "Conversion.h"
+//#include "GetAllCounts.h"
 
 using namespace Escape;
 /*
@@ -28,7 +33,7 @@ void delEdge(vector<int> adj[], int u, int v)
         if (adj[u][i] == v) {
             adj[u].erase(adj[u].begin() + i);
             break;
-        }
+        }  
     }
  
     // Traversing through the second vector list
@@ -49,12 +54,17 @@ int main(int argc, char *argv[])
  float eps = 0.1;
  VertexIdx i, j, k, l, v, vert, number, counts, *src, *dst;
  std::set<VertexIdx> out, out_f;
- std::list<std::set<VertexIdx>> output;
+ std::list<std::set<VertexIdx> > output;
  std::vector<int> removals;
+ long long int counter = 0;
  
+ printf("Compiling started");
 
-  if (loadGraph(argv[1], g, 1, IOFormat::escape))
+  if (loadGraph(argv[1], g, 1, IOFormat::escape)){
+    printf("blah");
     exit(1);
+  }
+    
 
   printf("Loaded graph\n");
   CGraph cg = makeCSR(g);
@@ -73,8 +83,8 @@ int main(int argc, char *argv[])
   cg = cg_relabel.copy();
 
   number = cg.nVertices;
-  std::vector<std::vector<VertexIdx>> adj(number, std::vector<VertexIdx>);
-  std::vector<std::vector<VertexIdx>> hashmap(number, std::vector<VertexIdx>);
+  std::vector<std::vector <VertexIdx> > adj(number);
+  std::vector<std::vector <VertexIdx> > hashmap(number);
 
   double nonInd[4];
   src = g.srcs;
@@ -94,17 +104,20 @@ int main(int argc, char *argv[])
     degree[i] = adj[i].size();
   }
   counts = cg.nVertices;
-
+  FILE* f = fopen("out.txt","w");
+  if (!f)
+  {
+      printf("could not write to output to out.txt\n");
+      return 0;
+  }
   while (counts){
     removals.clear();
-    inf = cleaner(cg, degree, eps, adj);
+    inf = cleaner(&cg, degree, eps, adj);
     for (i=0; i<adj.size(); ++i){
         
         for (j=0; j<adj[i].size(); ++j){
             sources.push_back(i);
             dests.push_back(adj[i][j]);
-            g_temp.srcs = &sources[0];
-            g_temp.dsts = &dests[0];
         }
 
         if (adj[i].size()==0){
@@ -112,6 +125,9 @@ int main(int argc, char *argv[])
             removals.push_back(i);
         }
     }
+
+    g_temp.srcs = &sources[0];
+    g_temp.dsts = &dests[0];
 
     int k = 0;
 
@@ -123,7 +139,7 @@ int main(int argc, char *argv[])
     }
 
     g_temp.nVertices = adj.size();
-    g_temp.nEdges = &sources[0].size();
+    g_temp.nEdges = sources.size();
 
     CGraph cg = makeCSR(g_temp);
     cg.sortById();
@@ -132,30 +148,20 @@ int main(int argc, char *argv[])
     CDAG dag = degreeOrdered(&cg_relabel);
     (dag.outlist).sortById();
     (dag.inlist).sortById();
-    out = extractor(cg_relabel, degree, eps, inf, counts, adj);
+    out = extractor(&cg_relabel, degree, eps, inf, counts, adj);
     
     out_f.clear();
 
     for (i=0; i<out.size(); ++i ){
         out_f.insert(hashmap[i].back());
+        fprintf(f, "%lld,", hashmap[i].back());
     }
-
+    counter++;
     output.push_back(out_f);
+    fprintf(f, "End of cluster %lld,", counter);
   }
 
 
-  FILE* f = fopen("out.txt","w");
-  if (!f)
-  {
-      printf("could not write to output to out.txt\n");
-      return 0;
-  }
-  fprintf(f,"%lld\n",cg_relabel.nVertices);
-  fprintf(f,"%lld\n",cg_relabel.nEdges);
-  for(int i = 0; i < 4; i++)
-  {
-      fprintf(f,"%f\n",nonInd[i]);
-  }
 
   fclose(f);
 }

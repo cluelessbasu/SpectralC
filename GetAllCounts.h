@@ -3,21 +3,21 @@
 
 #include <algorithm>
 
-#include "Escape/FourVertex.h"
-#include "Escape/Utils.h"
-#include "Escape/GraphIO.h"
-#include "Escape/EdgeHash.h"
-#include "Escape/Digraph.h"
-#include "Escape/Triadic.h"
-#include "Escape/Graph.h"
-#include "Escape/Conversion.h"
-#include "Escape/FiveTrees.h"
-#include "Escape/FiveFromCycleClique.h"
-#include "Escape/FiveFromTriangles.h"
-#include "Escape/AlmostFiveClique.h"
-#include "Escape/FiveCycle.h"
-#include "Escape/WedgeCollisions.h"
-#include "Escape/TriangleProgram.h"
+#include "FourVertex.h"
+#include "Utils.h"
+#include "GraphIO.h"
+#include "EdgeHash.h"
+#include "Digraph.h"
+#include "Triadic.h"
+#include "Graph.h"
+#include "Conversion.h"
+#include "FiveTrees.h"
+#include "FiveFromCycleClique.h"
+#include "FiveFromTriangles.h"
+#include "AlmostFiveClique.h"
+#include "FiveCycle.h"
+#include "WedgeCollisions.h"
+#include "TriangleProgram.h"
 
 
 
@@ -51,7 +51,7 @@ void getAllThree(CGraph *cg, CDAG *dag, double (&nonInd)[4])
     nonInd[1] = m*(n-2);    // number of plain edges
     nonInd[2] = w; // number of plain wedges
 
-    info = betterWedgeEnumerator(&(dag->outlist));
+    info = wedgeEnumerator(&(dag->outlist));
     nonInd[3] = info.total;
 }
 
@@ -72,7 +72,7 @@ void getAllFour(CGraph *cg, CDAG *dag, double (&nonInd)[11])
     
     m = 0;
     w = 0;
-    tri_info = betterWedgeEnumerator(&(dag->outlist));
+    tri_info = wedgeEnumerator(&(dag->outlist));
     t = tri_info.total;
 
     for (VertexIdx i = 0; i < n; i++)
@@ -132,7 +132,7 @@ void getAllFive(CGraph *cg, CDAG *dag, double (&nonIndFour)[11], double (&nonInd
     four_info.chordalcycles = nonIndFourStruct.chordalcycles;
 
     printf("Getting all triangles\n");
-    TriangleInfo tri_info = betterWedgeEnumerator(&(dag->outlist));
+    TriangleInfo tri_info = wedgeEnumerator(&(dag->outlist));
     TriangleList allTris = storeAllTriangles(cg,tri_info.total);
 
     printf("Also getting reverse triangle info\n");

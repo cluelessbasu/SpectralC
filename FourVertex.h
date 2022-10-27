@@ -3,11 +3,11 @@
 
 #include <algorithm>
 
-#include "Escape/ErrorCode.h"
-#include "Escape/Graph.h"
-#include "Escape/Digraph.h"
-#include "Escape/Triadic.h"
-#include "Escape/Utils.h"
+#include "ErrorCode.h"
+#include "Graph.h"
+#include "Digraph.h"
+#include "Triadic.h"
+#include "Utils.h"
 
 using namespace Escape;
 
@@ -64,7 +64,7 @@ SomeFourPatterns easyFourCounter(CGraph *g, CGraph *gout)
     EdgeIdx degi=0, degj=0;
 
     TriangleInfo info;
-    info = betterWedgeEnumerator(gout);
+    info = wedgeEnumerator(gout);
     
     for (VertexIdx i=0; i < g->nVertices; i++)
     {

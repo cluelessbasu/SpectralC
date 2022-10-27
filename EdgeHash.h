@@ -1,8 +1,8 @@
 #ifndef ESCAPE_EDGEHASH_H_
 #define ESCAPE_EDGEHASH_H_
 
-#include "Escape/ErrorCode.h"
-#include "Escape/Graph.h"
+#include "ErrorCode.h"
+#include "Graph.h"
 
 #include <unordered_set>
 

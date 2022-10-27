@@ -8,7 +8,8 @@
 #include <set>
 #include <vector>
 #include <stdio.h>
-#include<cmath>
+#include <cmath>
+#include <iterator>
 using namespace Escape;
 
 // Structure that stores triangle information of graph
@@ -23,9 +24,9 @@ struct TriangleInfo
 
 struct TriangleInfo2
 {
-    Count total; // total number of triangles
-    Count *perVertex;  // array storing number of triangles for each vertex
-    Count *perEdge;   // arry storing number of triangles for each edge
+    Count2 total; // total number of triangles
+    Count2 *perVertex;  // array storing number of triangles for each vertex
+    Count2 *perEdge;   // arry storing number of triangles for each edge
 
 };
 
@@ -65,6 +66,15 @@ struct TriangleList
     VertexIdx *triangles;
     EdgeIdx *trioffsets;
 };
+
+std::set<long long int> Union(const std::set<long long int> & s0, const std::set<long long int> & s1) {
+    std::set<long long int> s; 
+    std::set_union(s0.begin(), s0.end(),
+        s1.begin(), s1.end(),
+        std::inserter(s,s.begin()));
+
+    return s;
+}
 
 
 
@@ -135,12 +145,12 @@ TriangleInfo wedgeEnumerator(CGraph *g)
 // Input: a pointer gout to a CGraph labeled according to degree
 // Output: a TriangleInfo for g. The ordering of edges in perEdge (of TriangleInfo) is that same as g.
 
-TriangleInfo2 cleaner(CGraph gout, int *degree, float eps, std::vector<std::vector<VertexIdx>>& adj) //fix output format
+TriangleInfo2 cleaner(CGraph *gout, int *degree, float eps, std::vector<std::vector<VertexIdx> >& adj) //fix output format
 {
    TriangleInfo2 ret;   // output 
    ret.total = 0;      // initialize outout
-   ret.perVertex = new Count[gout->nVertices+1];
-   ret.perEdge = new Count[gout->nEdges+1]; 
+   ret.perVertex = new Count2[gout->nVertices+1];
+   ret.perEdge = new Count2[gout->nEdges+1]; 
    float weight;
 
    for (VertexIdx i=0; i < gout->nVertices; ++i)
@@ -181,8 +191,8 @@ TriangleInfo2 cleaner(CGraph gout, int *degree, float eps, std::vector<std::vect
                    for (EdgeIdx l = gout->trioffsets[k]; l<gout->trioffsets[k+1]; ++l)
                    {
                         //triFlag[l] = 0;
-                        adj[end1].remove(end2);
-                        adj[end2].remove(end1);
+                        adj[end1].erase(std::remove(adj[end1].begin(), adj[end1].end(), end2), adj[end1].end());
+                        adj[end2].erase(std::remove(adj[end2].begin(), adj[end2].end(), end1), adj[end2].end());
                         //if len(adj[end1]==0){
                         //    vtxFlag[end1] = 0;
                         //}
@@ -200,7 +210,7 @@ TriangleInfo2 cleaner(CGraph gout, int *degree, float eps, std::vector<std::vect
    return ret;
 }
 
-std::set <VertexIdx> extractor(CGraph gout, int *degree, float eps, TriangleInfo2 info, VertexIdx &count, std::vector<std::vector<VertexIdx>>& adj){
+std::set <VertexIdx> extractor(CGraph *gout, int *degree, float eps, TriangleInfo2 info, VertexIdx &count, std::vector<std::vector<VertexIdx> >& adj){
 
         VertexIdx end1, end2, e1, a,b,c,d, i, j, l, v, k, triangle;
         EdgeIdx loc, loc1, loc2, loc3;
@@ -211,13 +221,15 @@ std::set <VertexIdx> extractor(CGraph gout, int *degree, float eps, TriangleInfo
 
         float incident = 0;
         float inside = 0;
+        float weight = 0;
+        float wt = 0;
 
         k = 0;
 
         TriangleInfo2 ret;   // output 
         ret.total = 0;      // initialize outout
-        ret.perVertex = new Count[set2.size()];
-        ret.perEdge = new Count[set2.size()];
+        ret.perVertex = new Count2[set2.size()];
+        ret.perEdge = new Count2[set2.size()];
 
         for (VertexIdx l=0; l < gout->nVertices; ++l) // loop over vertices
             {
@@ -238,7 +250,8 @@ std::set <VertexIdx> extractor(CGraph gout, int *degree, float eps, TriangleInfo
                         }
 
                         for (EdgeIdx j = 0; j<set1.size(); ++j){
-                            e1 = set1[j];
+                            e1 = *std::next(set1.begin(), j);
+                            //e1 = set1[j];
                             a = gout->nbors[e1];
                             set2.insert(a);
 
@@ -249,7 +262,8 @@ std::set <VertexIdx> extractor(CGraph gout, int *degree, float eps, TriangleInfo
 
                         for (VertexIdx ii=0; ii < set2.size(); ++ii) // loop over vertices
                             {
-                                i = set2[ii];
+                                i = *std::next(set2.begin(), ii);
+                                //i = set2[ii];
                                 for (EdgeIdx j = gout->offsets[i]; j < gout->offsets[i+1]; ++j)   // loop over neighbor of i
                                     for (EdgeIdx k = j+1; k < gout->offsets[i+1]; ++k)         // loop over another neighbor of i
                                     {
@@ -272,15 +286,16 @@ std::set <VertexIdx> extractor(CGraph gout, int *degree, float eps, TriangleInfo
                                         }
                                     }
 
-                            float values[set2.size()][3];
+                            long long int values[set2.size()][3];
 
 
 
                             for (i = 0 ; i < set2.size(); ++i){
-                                values[i][0] = set2[i];
+                                values[i][0] = *std::next(set2.begin(), i);
+                                //values[i][0] = set2[i];
                                 values[i][1] = i;
                                 values[i][2] = ret.perVertex[i];
-                                incident +=  info.perVertex[set2[i]];
+                                incident +=  info.perVertex[*std::next(set2.begin(), i)];
                             }
 
                             for (i=0; i<set2.size(); ++i){
@@ -302,7 +317,7 @@ std::set <VertexIdx> extractor(CGraph gout, int *degree, float eps, TriangleInfo
 
                             }
 
-                            out = set_union(set1, out);
+                            out = Union(set1, out);
 
                             for (VertexIdx i=0; i < gout->nVertices; ++i) // loop over vertices
                                 for (EdgeIdx j = gout->offsets[i]; j < gout->offsets[i+1]; ++j)   // loop over neighbor of i
@@ -337,9 +352,9 @@ std::set <VertexIdx> extractor(CGraph gout, int *degree, float eps, TriangleInfo
 
                             for (i = 0; i<adj.size(); ++i){
                                 for (long long int vert = 0; vert<out.size(); ++vert){
-                                    v = out[vert];
-                                    if (adj[i].find(v)! = adj[i].end()){
-                                        adj[i].remove(v);
+                                    v = *std::next(out.begin(), vert);
+                                    if (std::find(adj[i].begin(), adj[i].end(), v) != adj[i].end()){
+                                        adj[i].erase(std::remove(adj[i].begin(), adj[i].end(), v), adj[i].end());
                                     }
                                 }
                             }

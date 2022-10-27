@@ -3,8 +3,8 @@
 
 #include <algorithm>
 
-#include "Escape/FourVertex.h"
-#include "Escape/Utils.h"
+#include "FourVertex.h"
+#include "Utils.h"
 
 using namespace Escape;
 

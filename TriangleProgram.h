@@ -221,8 +221,8 @@ int64_t countTriangles(const CGraph* gOut
   , bool degreeOrdered = false
   , bool directed = true
   , const CGraph *gIn=0
-  , int64_t *perVertex = 0
-  , int64_t *perEdge = 0);
+  , long long int *perVertex = 0
+  , long long int *perEdge = 0);
 
 
 

@@ -1,15 +1,16 @@
 #ifndef ESCAPE_GRAPH_H_
 #define ESCAPE_GRAPH_H_
 
-#include <cstdlib>
-#include <cstdio>
+//#include <cstdlib>
+//#include <cstdio>
 
 namespace Escape
 {
 
 using VertexIdx = long long int;
 using EdgeIdx   = long long int;
-using Count     = float;
+using Count     = long long int;
+using Count2    = float;
 //using Weights   = float;
 //using Triangles = **int64_t;
 
@@ -106,8 +107,16 @@ struct EdgeInfo
     //Weights triwt;
     
 };
-
-
+/*
+enum class IOFormat
+{
+  none      //try to guess from file extension or probing
+  , escape  //our own internal format
+  , snap    //Stanford SNAP
+  , matrix  //Matrix Market
+  , bcsr    //Binary CSR
+};
+*/
 //Allocate memory for a CSR/CSC graph
 CGraph newCGraph(VertexIdx nVertices, EdgeIdx nEdges);
 
@@ -122,6 +131,8 @@ CGraph makeCSR(Graph g, bool inPlace = false);
 //Make a CSC graph from a COO graph.  If inPlace is true, the input graph is
 //destroyed, i.e. you should not call delGraph on it.
 CGraph makeCSC(Graph g, bool inPlace = false);
+
+//ErrorCode loadGraph(const char *path, Graph& graph, int undirected, IOFormat fmt);
 
 }
 #endif

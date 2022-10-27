@@ -3,12 +3,12 @@
 
 #include <algorithm>
 
-#include "Escape/ErrorCode.h"
-#include "Escape/Graph.h"
-#include "Escape/Digraph.h"
-#include "Escape/Triadic.h"
-#include "Escape/FourVertex.h"
-#include "Escape/Utils.h"
+#include "ErrorCode.h"
+#include "Graph.h"
+#include "Digraph.h"
+#include "Triadic.h"
+#include "FourVertex.h"
+#include "Utils.h"
 
 using namespace Escape;
 

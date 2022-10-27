@@ -22,6 +22,7 @@ enum class IOFormat
   , snap    //Stanford SNAP
   , matrix  //Matrix Market
   , bcsr    //Binary CSR
+  , edges
 };
 
 

@@ -1,4 +1,4 @@
-CC=nvcc
-CFLAGS=-Wall -O3 
-% : %.cc	
+CC=g++
+CFLAGS=-O3 
+% : %.cpp	
 	    $(CC) $(CFLAGS) $< -o $@

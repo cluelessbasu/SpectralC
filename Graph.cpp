@@ -1,5 +1,5 @@
-#include "Escape/Graph.h"
-#include "Escape/JointSort.h"
+#include "Graph.h"
+#include "JointSort.h"
 #include <algorithm>
 
 using namespace Escape;

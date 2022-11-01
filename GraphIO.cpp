@@ -1,4 +1,4 @@
-#include "Escape/GraphIO.h"
+#include "GraphIO.h"
 
 
 using namespace Escape;

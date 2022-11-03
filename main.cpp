@@ -197,6 +197,8 @@ int main()
  }
  
  //loop begins
+
+ //change to adj functions
   int repeat = 0;
   while (counts){
     repeat = 0;

@@ -143,20 +143,22 @@ TriangleInfo wedgeEnumerator(CGraph *g)
 // Output: a TriangleInfo for g. The ordering of edges in perEdge (of TriangleInfo) is that same as g.
 
 void clean (Graph G, int *degree, float eps, std::vector<std::vector<VertexIdx> >& adj){
-        VertexIdx enum = G.nEdges;
+        VertexIdx enums = G.nEdges;
         VertexIdx vnum = G.nVertices;
         float twt = 0;
+        VertexIdx u, v;
 
-        VertexIdx sources[nEdges], dests[nEdges];
-        float weights[nEdges];
+        VertexIdx sources[enums], dests[enums];
+        float weights[enums];
 
-        for (VertexIdx i = 0; i<enum, i++){
+        for (VertexIdx i = 0; i<enums; i++){
+            twt = 0;
             u = sources[i];
             v = dests[i];
             for (VertexIdx j =0; j<adj[u].size(); j++){
                 for (VertexIdx k =0; k<adj[v].size(); k++){
                     if (adj[u][j] == adj[v][k]){
-                        twt += 1/degree[adj[v][k]]
+                        twt += 1/degree[adj[v][k]];
                     }
                 }
             }
@@ -173,9 +175,10 @@ void clean (Graph G, int *degree, float eps, std::vector<std::vector<VertexIdx> 
         }
 }
 
-std::set <VertexIdx> extract (VerteIdx vum, std::vector<std::vector<VertexIdx> >& adj){
+std::set <VertexIdx> extract (VertexIdx vnum, std::vector<std::vector<VertexIdx> >& adj, std::vector <VertexIdx>& rev, std::vector <VertexIdx>& indices, std::vector <VertexIdx>& flag){
 
-        VertexIdx i; 
+        VertexIdx i, v1, v2, v, u; 
+        std::set <VertexIdx> set1;
         for (VertexIdx blah = 0; blah < vnum; blah++){
             while(!(flag[indices[blah]]) || adj[rev[indices[blah]]].size()<3)
                             {blah++;}
@@ -191,7 +194,7 @@ std::set <VertexIdx> extract (VerteIdx vum, std::vector<std::vector<VertexIdx> >
 
             for (EdgeIdx j = 0; j<set1.size(); ++j){
                 v1 = *std::next(set1.begin(), j);
-                for (EdgeIdx k = 0; k<adj[e1].size(); k++){
+                for (EdgeIdx k = 0; k<adj[v1].size(); k++){
                     set1.insert(adj[v1][k]);
                 }
             }
@@ -206,7 +209,7 @@ std::set <VertexIdx> extract (VerteIdx vum, std::vector<std::vector<VertexIdx> >
                             deg++;
                     }
                     if (!(deg>adj[v1].size()/2)){
-                        set1.discard(v1);
+                        set1.erase(v1);
                     }
                 }
 
@@ -220,7 +223,7 @@ std::set <VertexIdx> extract (VerteIdx vum, std::vector<std::vector<VertexIdx> >
 
                     for (VertexIdx k = 0; k<adj[i].size(); k++){
                         if (v == adj[i][k])
-                            adj[i].erase(adj[i].begin+k);
+                            adj[i].erase(adj[i].begin()+k);
                     }
 
                }
@@ -231,7 +234,8 @@ std::set <VertexIdx> extract (VerteIdx vum, std::vector<std::vector<VertexIdx> >
         for (EdgeIdx j = 0; j<set1.size(); j++){
 
                 v = *std::next(set1.begin(), j);
-                adj.erase(adj.begin+v);
+                adj.erase(adj.begin()+v);
+                flag[rev[v]] = 0;
 
         }
 

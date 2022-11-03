@@ -7,18 +7,15 @@
 #include <list>
 #include <set>
 #include <vector>
-#include <stdio.h>
-#include <cmath>
-#include <iterator>
 using namespace Escape;
 
 // Structure that stores triangle information of graph
 
 struct TriangleInfo
 {
-    long long int total; // total number of triangles
-    long long int *perVertex;  // array storing number of triangles for each vertex
-    long long int *perEdge;   // arry storing number of triangles for each edge
+    long int total; // total number of triangles
+    long int *perVertex;  // array storing number of triangles for each vertex
+    long int *perEdge;   // arry storing number of triangles for each edge
 
 };
 
@@ -67,8 +64,8 @@ struct TriangleList
     EdgeIdx *trioffsets;
 };
 
-std::set<long long int> Union(const std::set<long long int> & s0, const std::set<long long int> & s1) {
-    std::set<long long int> s; 
+std::set<long int> Union(const std::set<long int> & s0, const std::set<long int> & s1) {
+    std::set<long int> s; 
     std::set_union(s0.begin(), s0.end(),
         s1.begin(), s1.end(),
         std::inserter(s,s.begin()));
@@ -145,8 +142,106 @@ TriangleInfo wedgeEnumerator(CGraph *g)
 // Input: a pointer gout to a CGraph labeled according to degree
 // Output: a TriangleInfo for g. The ordering of edges in perEdge (of TriangleInfo) is that same as g.
 
+void clean (Graph G, int *degree, float eps, std::vector<std::vector<VertexIdx> >& adj){
+        VertexIdx enum = G.nEdges;
+        VertexIdx vnum = G.nVertices;
+        float twt = 0;
+
+        VertexIdx sources[nEdges], dests[nEdges];
+        float weights[nEdges];
+
+        for (VertexIdx i = 0; i<enum, i++){
+            u = sources[i];
+            v = dests[i];
+            for (VertexIdx j =0; j<adj[u].size(); j++){
+                for (VertexIdx k =0; k<adj[v].size(); k++){
+                    if (adj[u][j] == adj[v][k]){
+                        twt += 1/degree[adj[v][k]]
+                    }
+                }
+            }
+            if (twt<eps){
+                for (VertexIdx j =0; j<adj[u].size(); j++){
+                    if (adj[u][j] == v)
+                        adj[u].erase(adj[u].begin()+j);
+                }
+                for (VertexIdx j =0; j<adj[v].size(); j++){
+                    if (adj[v][j] == u)
+                        adj[v].erase(adj[v].begin()+j);
+                }
+            }
+        }
+}
+
+std::set <VertexIdx> extract (VerteIdx vum, std::vector<std::vector<VertexIdx> >& adj){
+
+        VertexIdx i; 
+        for (VertexIdx blah = 0; blah < vnum; blah++){
+            while(!(flag[indices[blah]]) || adj[rev[indices[blah]]].size()<3)
+                            {blah++;}
+            VertexIdx i_n = indices[blah];
+
+            i = rev[i_n];
+            set1.insert(i);
+
+            for (VertexIdx j= 0; j<adj[i].size(); j++){
+                if (adj[j].size()<2*adj[i].size())
+                    set1.insert(j);
+            }
+
+            for (EdgeIdx j = 0; j<set1.size(); ++j){
+                v1 = *std::next(set1.begin(), j);
+                for (EdgeIdx k = 0; k<adj[e1].size(); k++){
+                    set1.insert(adj[v1][k]);
+                }
+            }
+
+            for (EdgeIdx j = 0; j<set1.size(); ++j){
+                int deg = 0;
+                v1 = *std::next(set1.begin(), j);
+                for (EdgeIdx k = 0; k<set1.size(); ++k){
+                    v2 = *std::next(set1.begin(), k);
+                    for (EdgeIdx l=0; l<adj[v1].size(); ++l){
+                        if (adj[v1][l] == v2)
+                            deg++;
+                    }
+                    if (!(deg>adj[v1].size()/2)){
+                        set1.discard(v1);
+                    }
+                }
+
+            }
+
+        for (VertexIdx i = 0; i < adj.size(); i++){
+
+               for (EdgeIdx j = 0; j<set1.size(); j++){
+
+                    v = *std::next(set1.begin(), j);
+
+                    for (VertexIdx k = 0; k<adj[i].size(); k++){
+                        if (v == adj[i][k])
+                            adj[i].erase(adj[i].begin+k);
+                    }
+
+               }
+
+        } 
+
+
+        for (EdgeIdx j = 0; j<set1.size(); j++){
+
+                v = *std::next(set1.begin(), j);
+                adj.erase(adj.begin+v);
+
+        }
+
+        
+    return set1;
+    }    
+}
+
 TriangleInfo2 cleaner(CGraph *gout, int *degree, float eps, std::vector<std::vector<VertexIdx> >& adj) //fix output format
-{
+{  std::set <VertexIdx> set1;
    TriangleInfo2 ret;   // output 
    ret.total = 0;      // initialize outout
    ret.perVertex = new Count2[gout->nVertices+1];
@@ -172,34 +267,33 @@ TriangleInfo2 cleaner(CGraph *gout, int *degree, float eps, std::vector<std::vec
                // note that end1 < end2 because of the labeled ordering
 
                loc = gout->getEdgeBinary(end1,end2);
-               if (loc != -1)        // (end1, end2) is present
-               {   
-                   ret.total++;       // found a triangle! So update total.
-                   weight = 1/(degree[i]*degree[end1]*degree[end2]);
+               if(degree[i]*degree[end1]*degree[end2]!=0){
+                    if (loc != -1)        // (end1, end2) is present
+                    {   
+                        ret.total++;       // found a triangle! So update total.
+                        weight = 1/(degree[i]*degree[end1]*degree[end2]);
 
-                   ret.perVertex[i] += weight; // update all per vertex counts
-                   ret.perVertex[end1] += weight;
-                   ret.perVertex[end2] += weight;
+                        ret.perVertex[i] += weight; // update all per vertex counts
+                        ret.perVertex[end1] += weight;
+                        ret.perVertex[end2] += weight;
 
-                   ret.perEdge[j] += weight;  // update all per edge counts. Note that location used is same as position in g->nbors
-                   ret.perEdge[k] += weight;
-                   ret.perEdge[loc] += weight;
+                        ret.perEdge[j] += weight;  // update all per edge counts. Note that location used is same as position in g->nbors
+                        ret.perEdge[k] += weight;
+                        ret.perEdge[loc] += weight;
+                    }
+
+                    if (ret.perEdge[k]< eps/(degree[end1]*degree[end2])){
+                        //edgeFlag[k] = 0;
+                                adj[end1].erase(std::remove(adj[end1].begin(), adj[end1].end(), end2), adj[end1].end());
+                                adj[end2].erase(std::remove(adj[end2].begin(), adj[end2].end(), end1), adj[end2].end());
+                                //if len(adj[end1]==0){
+                                //    vtxFlag[end1] = 0;
+                                //}
+                                //if len(adj[end2]==0){
+                                //     vtxFlag[end2] = 0;
+                                //}
+                        
                }
-
-               if (ret.perEdge[k]< eps/(degree[end1]*degree[end2])){
-                   //edgeFlag[k] = 0;
-                   for (EdgeIdx l = gout->trioffsets[k]; l<gout->trioffsets[k+1]; ++l)
-                   {
-                        //triFlag[l] = 0;
-                        adj[end1].erase(std::remove(adj[end1].begin(), adj[end1].end(), end2), adj[end1].end());
-                        adj[end2].erase(std::remove(adj[end2].begin(), adj[end2].end(), end1), adj[end2].end());
-                        //if len(adj[end1]==0){
-                        //    vtxFlag[end1] = 0;
-                        //}
-                        //if len(adj[end2]==0){
-                        //     vtxFlag[end2] = 0;
-                        //}
-                   }
                }
 
                
@@ -210,9 +304,9 @@ TriangleInfo2 cleaner(CGraph *gout, int *degree, float eps, std::vector<std::vec
    return ret;
 }
 
-std::set <VertexIdx> extractor(CGraph *gout, int *degree, float eps, TriangleInfo2 info, VertexIdx &count, std::vector<std::vector<VertexIdx> >& adj){
+std::set <VertexIdx> extractor(CGraph *gout, int *degree, float eps, TriangleInfo2 info, VertexIdx &count, std::vector<std::vector<VertexIdx> >& adj, std::vector <VertexIdx>& indices, std::vector <VertexIdx>& flag, std::vector <VertexIdx>& rev, std::vector<std::vector<VertexIdx> >& hash){
 
-        VertexIdx end1, end2, e1, a,b,c,d, i, j, l, v, k, triangle;
+        VertexIdx end1, end2, e1, a,b,c,d, i, j, l, v, v_r, k, triangle;
         EdgeIdx loc, loc1, loc2, loc3;
 
         std::set <VertexIdx> set1;
@@ -226,37 +320,60 @@ std::set <VertexIdx> extractor(CGraph *gout, int *degree, float eps, TriangleInf
 
         k = 0;
 
-        TriangleInfo2 ret;   // output 
-        ret.total = 0;      // initialize outout
-        ret.perVertex = new Count2[set2.size()];
-        ret.perEdge = new Count2[set2.size()];
+        TriangleInfo2 ret;  
+        
 
-        for (VertexIdx l=0; l < gout->nVertices; ++l) // loop over vertices
-            {
-                if (adj[l].empty())
-                    continue;
-                else
-                    {
-                        i = l;
+        for (VertexIdx blah=0; blah < flag.size(); ++blah) // loop over vertices
+            {           
+                        while(!(flag[indices[blah]]) || adj[rev[indices[blah]]].size()<3)
+                            {blah++;}
+                        VertexIdx i_n = indices[blah];
+
+                        i = rev[i_n];
+                        printf("\n%ld, %ld", (flag[indices[blah]]) , adj[i].size());
+                        printf ("\nVertex is %ld/%ld, degree is %d, blah is %ld\n ", i_n,i,degree[i_n], blah);
+
+                        //VertexIdx next = 0;
+                        //blah++;
+                        //while(!(flag[indices[blah]]) || adj[indices[blah]].size()<3)
+                        //    {blah++;}
+
+                        //VertexIdx next_n = indices[blah];
+                        //next = rev[next_n];
+
+                        //printf("The next one is %ld with degree %d, the offsets are %ld and %ld\n ", next, degree[next], gout->offsets[i], gout->offsets[next]);
+
+                        set1.insert(i);
+
+                        printf ("Offsets are %ld, %ld",gout->offsets[i+1], gout->offsets[i] );
                 
                         for (EdgeIdx j = gout->offsets[i]; j < gout->offsets[i+1]; ++j)   // loop over neighbor of i
                         {   
                             v = gout->nbors[j];
-                            if (degree[v]<degree[i]/(pow(eps,2))){
-                                k ++;
+                            v_r = rev[v];
+                            printf ("\nDegree of this nbr is %d\n", degree[v_r]);
+                            printf ("\n Compare %ld and %ld", gout->offsets[i+1]-gout->offsets[i], adj[i].size());
+                            if (degree[v_r]<degree[i_n]/(pow(eps,3))){
+                                //k ++;
                                 set1.insert(v);
-                                
+                               
                             }
-                        }
-
+                            else {
+                                printf ("\n Degree of %ld is %d\n", v_r, degree[v_r]);
+                                printf ("\n Compare %ld and %ld", gout->offsets[i+1]-gout->offsets[i], adj[v_r].size());
+                            }
+                        }//printf("\nExtractor loop 1");
+                        printf("\n Set 1 has %ld elements\n", set1.size());
                         for (EdgeIdx j = 0; j<set1.size(); ++j){
                             e1 = *std::next(set1.begin(), j);
                             //e1 = set1[j];
                             a = gout->nbors[e1];
                             set2.insert(a);
 
-                        }
-
+                        }//printf("\nExtractor loop 2");
+                        ret.total = 0;      // initialize outout
+                        ret.perVertex = new Count2[set2.size()];
+                        ret.perEdge = new Count2[set2.size()];
                         VertexIdx end1, end2;
                         EdgeIdx loc;
 
@@ -273,10 +390,10 @@ std::set <VertexIdx> extractor(CGraph *gout, int *degree, float eps, TriangleInf
                                         // note that end1 < end2 because of the labeled ordering
 
                                         loc = gout->getEdgeBinary(end1,end2);
-                                        triangle = gout->trioffsets[k];
-                                        if (loc != -1 && set2.count(i) && set2.count(end1) && set2.count(end2) && gout->trioffsets[triangle])        // (end1, end2) is present
+                                        //triangle = gout->trioffsets[k];
+                                        if (loc != -1 && set2.count(i) && set2.count(end1) && set2.count(end2) && loc)        // (end1, end2) is present
                                         {   
-                                            wt = 1/(degree[i]*degree[end1]*degree[end2]);
+                                            wt = 1/(degree[rev[i]]*degree[rev[end1]]*degree[rev[end2]]);
 
                                             ret.perVertex[ii] += weight; // update all per vertex counts
                                             ret.perVertex[end1] += weight;
@@ -284,9 +401,9 @@ std::set <VertexIdx> extractor(CGraph *gout, int *degree, float eps, TriangleInf
                                         }
 
                                         }
-                                    }
+                                    }//printf("\nExtractor loop 3");
 
-                            long long int values[set2.size()][3];
+                            long int values[set2.size()][3];
 
 
 
@@ -296,7 +413,7 @@ std::set <VertexIdx> extractor(CGraph *gout, int *degree, float eps, TriangleInf
                                 values[i][1] = i;
                                 values[i][2] = ret.perVertex[i];
                                 incident +=  info.perVertex[*std::next(set2.begin(), i)];
-                            }
+                            }//printf("\nExtractor loop 4");
 
                             for (i=0; i<set2.size(); ++i){
                                 for ( VertexIdx j = i; j > 0; j--)
@@ -306,7 +423,7 @@ std::set <VertexIdx> extractor(CGraph *gout, int *degree, float eps, TriangleInf
                                         std::swap(values[j][2], values[j-1][2]);
 
                                     }
-                            }
+                            }//printf("\nExtractor loop 5");
 
                             for (i = 0; i <set2.size(); ++i){
                                 out.insert(values[i][0]);
@@ -315,9 +432,10 @@ std::set <VertexIdx> extractor(CGraph *gout, int *degree, float eps, TriangleInf
                                     break;
                                 }
 
-                            }
+                            }//printf("\nExtractor loop 6");
 
                             out = Union(set1, out);
+                            printf("\n Right now out is %ld", out.size());
 
                             for (VertexIdx i=0; i < gout->nVertices; ++i) // loop over vertices
                                 for (EdgeIdx j = gout->offsets[i]; j < gout->offsets[i+1]; ++j)   // loop over neighbor of i
@@ -348,22 +466,33 @@ std::set <VertexIdx> extractor(CGraph *gout, int *degree, float eps, TriangleInf
                                         
 
                                         
-                                    }
+                                    }//printf("\nExtractor loop 7");
+
+                            int dummy =0;
 
                             for (i = 0; i<adj.size(); ++i){
-                                for (long long int vert = 0; vert<out.size(); ++vert){
+                                
+                                for (long int vert = 0; vert<out.size(); ++vert){
+                                    
                                     v = *std::next(out.begin(), vert);
+                                    //printf("\n To remove: %ld", v);
                                     if (std::find(adj[i].begin(), adj[i].end(), v) != adj[i].end()){
-                                        adj[i].erase(std::remove(adj[i].begin(), adj[i].end(), v), adj[i].end());
+                                        //adj[i].erase(std::remove(adj[i].begin(), adj[i].end(), v), adj[i].end());
+                                        std::vector <VertexIdx>::iterator dels; 
+                                         dels = std::remove(adj[i].begin(),adj[i].end(),v);
+                                         //printf("\nFOUND: %ld", v);
+                                        
+                                        dummy++;
                                     }
                                 }
-                            }
-
-                        }
-                         
+                            }//printf("\nExtractor loop 8");
+                        break;
+                        }//printf("\nExtractor int loop");
+                        
+                   //break;      
         
-            } 
-            
+             //printf("\nExtractor out loop");
+        printf("\nEnd of extractor\n");
         count = count - out.size();
         return out;  // possibly return the net incident triangle weight to reduce work later on: what about the edge list? 
 
@@ -454,14 +583,14 @@ TriangleInfo moveOutToIn(CGraph *gout, CGraph *gin, TriangleInfo *outinfo)
             if (loc == -1) // Edge (j,i) not in gin, so arguments are not reverses of each other
             {
                 printf("Error in moveOutToIn: gout and gin not reverses of each other\n");
-                printf("i = %lld, j = %lld\n",i,j);
-                printf("%lld: ",i);
+                printf("i = %ld, j = %ld\n",i,j);
+                printf("%ld: ",i);
                 for (EdgeIdx posnew = gout->offsets[i]; posnew < gout->offsets[i+1]; posnew++)
-                    printf("%lld ",gout->nbors[posnew]);
+                    printf("%ld ",gout->nbors[posnew]);
                 printf("\n");
-                printf("%lld: ",j);
+                printf("%ld: ",j);
                 for (EdgeIdx posnew = gin->offsets[j]; posnew < gin->offsets[j+1]; posnew++)
-                    printf("%lld ",gin->nbors[posnew]);
+                    printf("%ld ",gin->nbors[posnew]);
                 printf("\n");
                 exit(EXIT_FAILURE);
             }
@@ -738,11 +867,11 @@ Count cClosure(CGraph* g, Count* common, Count* closed)
 void printTri(FILE* f, TriangleInfo *info, CGraph *g)
 {
     for (VertexIdx i=0; i < g->nVertices; ++i)
-        fprintf(f, "%lld: %lld\n",i,info->perVertex[i]);
+        fprintf(f, "%ld: %ld\n",i,info->perVertex[i]);
     printf("---------------------\n");
     for (VertexIdx i=0; i < g->nVertices; ++i)
         for (EdgeIdx j=g->offsets[i]; j < g->offsets[i+1]; ++j)
-            fprintf(f, "(%lld, %lld): %lld\n",i,g->nbors[j],info->perEdge[j]);
+            fprintf(f, "(%ld, %ld): %ld\n",i,g->nbors[j],info->perEdge[j]);
 }
 
 

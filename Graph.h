@@ -4,12 +4,17 @@
 //#include <cstdlib>
 //#include <cstdio>
 
+#include <cstdio>
+#include <cstdlib>
+#include <cmath>
+
+
 namespace Escape
 {
 
-using VertexIdx = long long int;
-using EdgeIdx   = long long int;
-using Count     = long long int;
+using VertexIdx = long int;
+using EdgeIdx   = long int;
+using Count     = long int;
 using Count2    = float;
 //using Weights   = float;
 //using Triangles = **int64_t;
@@ -68,7 +73,7 @@ struct CGraph
   EdgeIdx    nEdges;      //number of edges in the graph
   EdgeIdx   *offsets;     //vertex v's edges are [offset[v], offset[v + 1])
   VertexIdx *nbors;       //incoming or outgoing neighbors
-  EdgeIdx   *trioffsets;
+  //EdgeIdx   *trioffsets;
   //Make a copy
   CGraph copy() const;
 

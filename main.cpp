@@ -79,7 +79,7 @@ int main()
  std::vector <VertexIdx> pVert;
  TriangleInfo2 inf;
  float eps = 0.1;
- VertexIdx i, j, k, l, v, vert, number, counts;
+ VertexIdx i, j, k, l, v, vert, number, counts, mapped;
  std::set<VertexIdx> out, out_f;
  std::list<std::set<VertexIdx> > output;
  std::vector<int> removals;
@@ -151,18 +151,18 @@ int main()
   }
   printf("\n Number of edges is %ld \n", cg.nEdges);
   printf("\n Here's an example:\n");
+  /*
   for (i = 0; i<adj[324].size(); ++i){
     printf ("%ld, ", adj[324][i]);
   }
   printf("\n");
   for (i = 0; i<adj[462].size(); ++i){
     printf ("%ld, ", adj[462][i]);
-  }
+  }*/
   printf("\n");
 
-  printf("\nTheir degrees are: %ld, %ld \n", adj[324].size(), adj[462].size());
-  printf("\n Tester is %d\n",tester);
-
+  //printf("\nTheir degrees are: %ld, %ld \n", adj[324].size(), adj[462].size());
+  
   for (i = 0; i<adj.size(); ++i){
     degree[i] = adj[i].size();
     if (degree[i]==0){
@@ -170,7 +170,7 @@ int main()
         zeros++;
     }
   }
-
+ int edges = cg.nEdges;
  std::cout << "Max is " << *std::max_element(degree, degree+cg.nVertices)<< std::endl;
  std::cout << "Min is " << *std::min_element(degree, degree+cg.nVertices)<< std::endl;
 
@@ -212,28 +212,35 @@ int main()
         else repeat = 5;
 
         repeat++;
+
+        int remove_e = 0;
         
         for (i=0; i<adj.size(); ++i){
         
             for (j=0; j<adj[i].size(); ++j){
-                if (i<j){
                     sources.push_back(i);
+                    sources.push_back(adj[i][j]);
                     dests.push_back(adj[i][j]);
-                }
+                    dests.push_back(i);
+                
             }
 
             if (adj[i].size()==0){
                 removals.push_back(i);
                 pos = hashmap[i].back();
                 flag[pos] = 0;
+                
             }
+            remove_e+= adj[i].size();
         }
 
-        printf("\n%ld vertices removed by cleaning\n", removals.size());
+        printf("\n%ld vertices and %d edges removed by cleaning\n", removals.size(), edges - remove_e);
+
+        edges-=(edges-remove_e);
     
         for (i =0; i<removals.size(); ++i){
             adj.erase(adj.begin()+removals[i]-i);
-            printf("%ld ",removals[i]);
+            //printf("%ld ",removals[i]);
         }
         counts = adj.size();
 
@@ -258,15 +265,16 @@ int main()
 
         for (i=0; i<number; ++i){
             inter = removals[k];
-        
+            mapped = reverse[inter];
 
-            if (hashmap[inter].back()<i){
-                hashmap[i-k].pop_back();
-                hashmap[i-k].push_back(i);
-                reverse[i] = i-k;
+            if (mapped<i){
+
+                hashmap[mapped-k].pop_back();
+                hashmap[mapped-k].push_back(i);
+                reverse[i] = mapped-k;
                 }
             else {
-                if(hashmap[inter].back()==i){
+                if(hashmap[mapped].back()==i){
                     k++;
                     //printf("\n %ld %ld %d %ld", inter, i, k, removals.size());
                 }
@@ -281,14 +289,14 @@ int main()
         }
         }
         
-        printf ("\n Graph is cleaned, new graph has %ld vertices\n", cg.nVertices);
+        printf ("\n Graph is cleaned, new graph has %ld vertices and %ld edges\n", cg.nVertices, cg.nEdges);
         //cg.sortById();
         //cg_relabel = cg.renameByDegreeOrder();
         //cg_relabel.sortById();
         //dag = degreeOrdered(&cg_relabel);
         //(dag.outlist).sortById();
         //(dag.inlist).sortById();
-        cg = cg_relabel.copy();
+        //cg = cg_relabel.copy();
         out = extractor(&cg, degree, eps, inf, counts, adj, indices, flag, reverse, hashmap);
         printf ("\nWe got here: output size is %ld", out.size());
         out_f.clear();

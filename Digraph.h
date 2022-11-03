@@ -27,7 +27,7 @@ struct DegreeComp
     {
         if (u<0 || v<0) // something wrong, so print error message, and exit
         {
-            printf("Something wrong in DegreeComp, negative vertices. u is %lld, v is %lld\n",u,v);
+            printf("Something wrong in DegreeComp, negative vertices. u is %ld, v is %ld\n",u,v);
             exit(EXIT_FAILURE);
         }
         VertexIdx degu = g->offsets[u+1] - g->offsets[u];  // Degree of u
@@ -81,22 +81,29 @@ Count degDist(CGraph* g, VertexIdx* degdistarray)
 //         of every vertex in the outlist are sorted by their degrees in g. This is quite useful in
 //         further processing.
 CDAG degreeOrdered(CGraph *g)
-{
+{   //printf ("Here we go\n");
     CDAG ret;     // CDAG to be returned
+    //printf ("Here we go\n");
     CGraph outdag = {g->nVertices, 0, new EdgeIdx[g->nVertices+1], new VertexIdx[g->nEdges+1]};  // Initialize DAG of out-edges
+    //printf ("Here we go\n");
     CGraph indag = {g->nVertices, 0, new EdgeIdx[g->nVertices+1], new VertexIdx[g->nEdges+1]};   // Initialize DAG of in-edges
+    //printf ("Here we go\n");
     EdgeIdx outcur = 0;
+    //printf ("Here we go\n");
     EdgeIdx incur = 0;
-    VertexIdx dest;
-    VertexIdx degi;
-    VertexIdx degdest;
-
+    //printf ("Here we go\n");
+    VertexIdx dest = 0;
+    //printf ("Here we go\n");
+    VertexIdx degi = 0;
+    //printf ("Here we go\n");
+    VertexIdx degdest = 0;
+    //printf("1");
     outdag.offsets[0] = 0;
     indag.offsets[0] = 0;
     for (VertexIdx i=0; i < g->nVertices; ++i)   // Looping over all vertices in g
-    {
+    {   //printf("2");
         for (EdgeIdx j = g->offsets[i]; j < g->offsets[i+1]; ++j)   // Looping over neighbors of i in g
-        {
+        {   //printf("%lld",j+2);
             dest = g->nbors[j];     // We are now looking at edge (i,dest)
             degi = g->offsets[i+1] - g->offsets[i];   // Degree of i
             degdest = g->offsets[dest+1]- g->offsets[dest];   // Degree of dest
@@ -122,13 +129,13 @@ CDAG degreeOrdered(CGraph *g)
         outdag.offsets[i+1] = outcur;         // We have finished all edges incident to i, so we can update offsets in DAGs.
         indag.offsets[i+1] = incur;
     }
-
+    //printf("\nFirstloop");
     for (VertexIdx i=0; i < g->nVertices;++i)  // Loops over vertices
         std::sort(outdag.nbors+outdag.offsets[i], outdag.nbors+outdag.offsets[i+1], DegreeComp(g)); // In outdag, sort all neighbors of i according to their degree. Note that DegreeComp gives the desired comparator.
 
     ret.outlist = outdag;
     ret.inlist = indag;
-
+    printf("\n Digraph terminates");
     return ret;
 }
 
@@ -224,7 +231,7 @@ CDAG degenOrdered(CGraph* g)
             swap = verts_by_deg[deg_ptrs[degrees[nbr]]]; //vertex to be swapped with nbr
             if (swap == -1) // some problem, swapping with deleted vertex
             {
-                printf("Error in degeneracy removal. Swapping with removed vertex\n nbr = %lld, deg_ptrs[degrees[nbr]] = %lld",nbr,deg_ptrs[degrees[nbr]]);
+                printf("Error in degeneracy removal. Swapping with removed vertex\n nbr = %ld, deg_ptrs[degrees[nbr]] = %ld",nbr,deg_ptrs[degrees[nbr]]);
                 exit(EXIT_FAILURE);
             }
             verts_by_deg[deg_ptrs[degrees[nbr]]] = nbr; //place nbr at beginning of list of vertices of its degree
@@ -251,7 +258,7 @@ CDAG degenOrdered(CGraph* g)
     {
         if (!is_removed[i]) // i was not removed
         {
-            printf("Error in degeneracy removal. Vertex %lld not removed\n",i);
+            printf("Error in degeneracy removal. Vertex %ld not removed\n",i);
             exit(EXIT_FAILURE);
         }
     }

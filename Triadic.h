@@ -7,6 +7,8 @@
 #include <list>
 #include <set>
 #include <vector>
+#include <cstring>
+#include <stdio.h>
 using namespace Escape;
 
 // Structure that stores triangle information of graph
@@ -142,7 +144,7 @@ TriangleInfo wedgeEnumerator(CGraph *g)
 // Input: a pointer gout to a CGraph labeled according to degree
 // Output: a TriangleInfo for g. The ordering of edges in perEdge (of TriangleInfo) is that same as g.
 
-void clean (Graph G, int *degree, float eps, std::vector<std::vector<VertexIdx> >& adj){
+void clean (Graph G, VertexIdx* src, VertexIdx* dst, int *degree, float eps, std::vector<std::vector<VertexIdx> >& adj){
         VertexIdx enums = G.nEdges;
         VertexIdx vnum = G.nVertices;
         float twt = 0;
@@ -151,18 +153,23 @@ void clean (Graph G, int *degree, float eps, std::vector<std::vector<VertexIdx> 
         VertexIdx sources[enums], dests[enums];
         float weights[enums];
 
+        std::memcpy(G.srcs, sources, sizeof(VertexIdx)*G.nEdges);
+        std::memcpy(G.dsts, dests, sizeof(VertexIdx)*G.nEdges);
+
         for (VertexIdx i = 0; i<enums; i++){
             twt = 0;
-            u = sources[i];
-            v = dests[i];
+            u = src[i];
+            v = dst[i];
+            //printf("\n Edges is %ld %d \n", u,v);
             for (VertexIdx j =0; j<adj[u].size(); j++){
                 for (VertexIdx k =0; k<adj[v].size(); k++){
                     if (adj[u][j] == adj[v][k]){
-                        twt += 1/degree[adj[v][k]];
+                        twt += 1.0/degree[adj[v][k]];
+                        //printf("\nTriwt is %f, degree is %d ",twt, degree[adj[v][k]]);
                     }
                 }
             }
-            if (twt<eps){
+            if (twt<eps*eps){
                 for (VertexIdx j =0; j<adj[u].size(); j++){
                     if (adj[u][j] == v)
                         adj[u].erase(adj[u].begin()+j);
@@ -170,6 +177,7 @@ void clean (Graph G, int *degree, float eps, std::vector<std::vector<VertexIdx> 
                 for (VertexIdx j =0; j<adj[v].size(); j++){
                     if (adj[v][j] == u)
                         adj[v].erase(adj[v].begin()+j);
+                        
                 }
             }
         }

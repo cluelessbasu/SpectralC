@@ -97,13 +97,13 @@ int main()
   
 
   printf("Loaded graph\n");
-  CGraph cg = makeCSR(g);
-  cg.sortById();
-  printf("Converted to CSR\n");
+  //CGraph cg = makeCSR(g);
+  //cg.sortById();
+  //printf("Converted to CSR\n");
 
-  printf("Relabeling graph\n");
-  CGraph cg_relabel; 
-  cg_relabel  = cg.renameByDegreeOrder();
+  //printf("Relabeling graph\n");
+  //CGraph cg_relabel; 
+  //cg_relabel  = cg.renameByDegreeOrder();
   //cg_relabel.sortById();
   //printf("Hehe\n");
   //printf("Creating DAG\n");
@@ -112,9 +112,9 @@ int main()
   //(dag.outlist).sortById();
   //(dag.inlist).sortById();
   
-  cg = cg_relabel.copy();
+  //cg = cg_relabel.copy();
 
-  number = cg.nVertices;
+  number = g.nVertices;
 
   printf("\n The number of vertices is %ld\n", number);
 
@@ -134,12 +134,12 @@ int main()
   std::memcpy(src, g.srcs, sizeof(VertexIdx)*g.nEdges);
   std::memcpy(dst, g.dsts, sizeof(VertexIdx)*g.nEdges);
 
-  int degree[cg.nVertices];
+  int degree[g.nVertices];
   int zeros = 0;
   
   //printf("\nShould repeat %ld times", sizeof(src)/sizeof(src[0]));
   int tester = 0;
-  for (i = 0; i<cg.nEdges; ++i){
+  for (i = 0; i<g.nEdges; ++i){
     j = g.srcs[i];
     k = g.dsts[i];
 
@@ -149,19 +149,27 @@ int main()
             adj[k].push_back(j);}
     //printf("%ld, %ld\n", j,k);
   }
-  printf("\n Number of edges is %ld \n", cg.nEdges);
+
+  int s1=0, s2=0;
+        for (i =0; i<g.nEdges; i++){
+            if (g.srcs[i]==0 && g.dsts[i]==0)
+                s1++;
+        }
+  printf("\nHere are s1 and s2: %d, %d", s1, s2);
+  printf("\n Number of edges is %ld \n", g.nEdges);
   printf("\n Here's an example:\n");
-  /*
+  
   for (i = 0; i<adj[324].size(); ++i){
     printf ("%ld, ", adj[324][i]);
   }
   printf("\n");
+  printf("\n");
   for (i = 0; i<adj[462].size(); ++i){
     printf ("%ld, ", adj[462][i]);
-  }*/
+  }
   printf("\n");
 
-  //printf("\nTheir degrees are: %ld, %ld \n", adj[324].size(), adj[462].size());
+  printf("\nTheir degrees are: %ld, %ld \n", adj[324].size(), adj[462].size());
   
   for (i = 0; i<adj.size(); ++i){
     degree[i] = adj[i].size();
@@ -170,16 +178,18 @@ int main()
         zeros++;
     }
   }
- int edges = cg.nEdges;
- std::cout << "Max is " << *std::max_element(degree, degree+cg.nVertices)<< std::endl;
- std::cout << "Min is " << *std::min_element(degree, degree+cg.nVertices)<< std::endl;
+
+ printf("\nTheir degrees are: %ld, %ld \n", degree[324], degree[462]);
+ int edges = g.nEdges;
+ std::cout << "Max is " << *std::max_element(degree, degree+g.nVertices)<< std::endl;
+ std::cout << "Min is " << *std::min_element(degree, degree+g.nVertices)<< std::endl;
 
 
  std::vector <VertexIdx> indices = sort_indexes (degree, adj.size());
 
- printf("%d many zeros of %ld vertices\n",zeros, cg.nVertices);
+ printf("%d many zeros of %ld vertices\n",zeros, g.nVertices);
 
-  counts = cg.nVertices;
+  counts =g.nVertices;
   FILE* f = fopen("out.txt","w");
   if (!f)
   {
@@ -195,11 +205,21 @@ int main()
     reverse[i] = i;
     hashmap[i].push_back(i);
  }
+
+ s1=0; 
+ s2=0;
+for (i =0; i<g.nEdges; i++){
+    if (src[i]==0 && dst[i]==0)
+        s1++;
+}
+
+printf("\nHere are s1 and s2: %d, %d", s1, s2);
  
  //loop begins
 
  //change to adj functions
   int repeat = 0;
+  printf("\n Clean begin\n");
   while (counts){
     repeat = 0;
    
@@ -210,7 +230,8 @@ int main()
         
         if (!counter)
             
-            inf = cleaner(&cg, degree, eps, adj);
+            clean(g, src, dst, degree, eps, adj);
+
         else repeat = 5;
 
         repeat++;
@@ -252,7 +273,7 @@ int main()
         VertexIdx* dst = &dests[0];
 
 
-        g_temp = newGraph(adj.size(), sources.size());
+        g = newGraph(adj.size(), sources.size());
 
         //g_temp.nVertices = adj.size();
         //g_temp.nEdges = sources.size();
@@ -260,8 +281,8 @@ int main()
         //VertexIdx* dst  = (VertexIdx*)malloc(sizeof(VertexIdx)*g_temp.nEdges);
         //VertexIdx* src  = (VertexIdx*)malloc(sizeof(VertexIdx)*g_temp.nEdges);
 
-        std::memcpy(g_temp.srcs, src, sizeof(VertexIdx)*g_temp.nEdges);
-        std::memcpy(g_temp.dsts, dst, sizeof(VertexIdx)*g_temp.nEdges);
+        std::memcpy(g.srcs, src, sizeof(VertexIdx)*g.nEdges);
+        std::memcpy(g.dsts, dst, sizeof(VertexIdx)*g.nEdges);
 
         int k = 0;
 
@@ -282,16 +303,17 @@ int main()
                 }
             }
             }
-
+        
+        
         
 
-        cg = makeCSR(g_temp);
+        //cg = makeCSR(g_temp);
         if (counter){
-            inf = cleaner(&cg, degree, eps, adj);
+            clean(g, src, dst, degree, eps, adj);
         }
         }
         
-        printf ("\n Graph is cleaned, new graph has %ld vertices and %ld edges\n", cg.nVertices, cg.nEdges);
+        printf ("\n Graph is cleaned, new graph has %ld vertices and %ld edges\n", g.nVertices, g.nEdges);
         //cg.sortById();
         //cg_relabel = cg.renameByDegreeOrder();
         //cg_relabel.sortById();
@@ -299,7 +321,7 @@ int main()
         //(dag.outlist).sortById();
         //(dag.inlist).sortById();
         //cg = cg_relabel.copy();
-        out = extractor(&cg, degree, eps, inf, counts, adj, indices, flag, reverse, hashmap);
+        out = extract(g.nVertices, adj, reverse, indices, flag);
         printf ("\nWe got here: output size is %ld", out.size());
         out_f.clear();
 

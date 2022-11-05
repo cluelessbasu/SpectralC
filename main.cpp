@@ -142,6 +142,8 @@ int main()
   for (i = 0; i<g.nEdges; ++i){
     j = g.srcs[i];
     k = g.dsts[i];
+    //sources.push_back(j);
+    //dests.push_back(k);
 
     if (j>k)
         {
@@ -179,7 +181,7 @@ int main()
     }
   }
 
- printf("\nTheir degrees are: %ld, %ld \n", degree[324], degree[462]);
+ printf("\nTheir degrees are: %d, %d \n", degree[324], degree[462]);
  int edges = g.nEdges;
  std::cout << "Max is " << *std::max_element(degree, degree+g.nVertices)<< std::endl;
  std::cout << "Min is " << *std::min_element(degree, degree+g.nVertices)<< std::endl;
@@ -206,6 +208,8 @@ int main()
     hashmap[i].push_back(i);
  }
 
+ //printf("\n i is %ld",i);
+
  s1=0; 
  s2=0;
 for (i =0; i<g.nEdges; i++){
@@ -214,6 +218,9 @@ for (i =0; i<g.nEdges; i++){
 }
 
 printf("\nHere are s1 and s2: %d, %d", s1, s2);
+
+//vnum = g.nVertices;
+//enums = g.nEdges;
  
  //loop begins
 
@@ -226,40 +233,32 @@ printf("\nHere are s1 and s2: %d, %d", s1, s2);
     printf("\n %ld vertices left", counts);
     while (repeat<5){
         
-        removals.clear();
-        
-        if (!counter)
-            
-            clean(g, src, dst, degree, eps, adj);
-
-        else repeat = 5;
-
         repeat++;
 
         int remove_e = 0;
         
         for (i=0; i<adj.size(); ++i){
         
-            for (j=0; j<adj[i].size(); ++j){
+                for (j=0; j<adj[i].size(); ++j){
                     sources.push_back(i);
                     sources.push_back(adj[i][j]);
                     dests.push_back(adj[i][j]);
                     dests.push_back(i);
                 
             }
+            
 
-            if (adj[i].size()==0){
-                removals.push_back(i);
-                pos = hashmap[i].back();
-                flag[pos] = 0;
-                
+            if (counter || repeat > 1)
+            {
+                if (adj[i].size()==0){
+                    //printf("\n i is %ld",i);
+                    removals.push_back(i);
+                    pos = hashmap[i].back();
+                    flag[pos] = 0;
+                    remove_e+= adj[i].size();
             }
-            remove_e+= adj[i].size();
-        }
-
-        printf("\n%ld vertices and %d edges removed by cleaning\n", removals.size(), edges - remove_e);
-
-        edges-=(edges-remove_e);
+            }}
+        
     
         for (i =0; i<removals.size(); ++i){
             adj.erase(adj.begin()+removals[i]-i);
@@ -267,50 +266,61 @@ printf("\nHere are s1 and s2: %d, %d", s1, s2);
         }
         counts = adj.size();
 
-        //delete src, dst;
+        VertexIdx enums = 0;
 
-        VertexIdx* src = &sources[0]; 
-        VertexIdx* dst = &dests[0];
+        for (VertexIdx i =0; i<adj.size(); i++){
+            enums += adj[i].size();
+        }
+
+        //VertexIdx* src = &sources[0]; 
+        //VertexIdx* dst = &dests[0];
 
 
-        g = newGraph(adj.size(), sources.size());
+        //g = newGraph(adj.size(), sources.size());
 
         //g_temp.nVertices = adj.size();
         //g_temp.nEdges = sources.size();
 
-        //VertexIdx* dst  = (VertexIdx*)malloc(sizeof(VertexIdx)*g_temp.nEdges);
-        //VertexIdx* src  = (VertexIdx*)malloc(sizeof(VertexIdx)*g_temp.nEdges);
+        
 
-        std::memcpy(g.srcs, src, sizeof(VertexIdx)*g.nEdges);
-        std::memcpy(g.dsts, dst, sizeof(VertexIdx)*g.nEdges);
+        //std::memcpy(g.srcs, src, sizeof(VertexIdx)*g.nEdges);
+        //std::memcpy(g.dsts, dst, sizeof(VertexIdx)*g.nEdges);
 
         int k = 0;
 
-        for (i=0; i<number; ++i){
-            inter = removals[k];
-            mapped = reverse[inter];
+        if ((repeat>1 || counter) && removals.size()>0){
+            for (i=0; i<number; ++i){
+                inter = removals[k];
+                mapped = reverse[inter];
 
-            if (mapped<i){
+                if (mapped<i){
 
-                hashmap[mapped-k].pop_back();
-                hashmap[mapped-k].push_back(i);
-                reverse[i] = mapped-k;
-                }
-            else {
-                if(hashmap[mapped].back()==i){
-                    k++;
-                    //printf("\n %ld %ld %d %ld", inter, i, k, removals.size());
+                    hashmap[mapped-k].pop_back();
+                    hashmap[mapped-k].push_back(i);
+                    reverse[i] = mapped-k;
+                    }
+                else {
+                    if(hashmap[mapped].back()==i){
+                        k++;
+                        //printf("\n %ld %ld %d %ld", inter, i, k, removals.size());
+                    }
                 }
             }
-            }
+        }
         
-        
-        
+        clean(sources, dests, degree, eps, adj);
+        printf("\n%ld vertices  removed\n", number-adj.size());
 
         //cg = makeCSR(g_temp);
         if (counter){
-            clean(g, src, dst, degree, eps, adj);
+            repeat = 5;
+            
         }
+
+        sources.clear();
+        dests.clear();
+        removals.clear();
+
         }
         
         printf ("\n Graph is cleaned, new graph has %ld vertices and %ld edges\n", g.nVertices, g.nEdges);
@@ -321,7 +331,7 @@ printf("\nHere are s1 and s2: %d, %d", s1, s2);
         //(dag.outlist).sortById();
         //(dag.inlist).sortById();
         //cg = cg_relabel.copy();
-        out = extract(g.nVertices, adj, reverse, indices, flag);
+        out = extract(adj, reverse, indices, flag);
         printf ("\nWe got here: output size is %ld", out.size());
         out_f.clear();
 
@@ -337,6 +347,8 @@ printf("\nHere are s1 and s2: %d, %d", s1, s2);
         fprintf(f, "\nEnd of cluster %ld,", counter);
         printf("\nEnd of cluster %ld,", counter);
         //delete &g_temp, &cg, &cg_relabel;
+
+        
     }
 
 

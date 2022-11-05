@@ -144,23 +144,23 @@ TriangleInfo wedgeEnumerator(CGraph *g)
 // Input: a pointer gout to a CGraph labeled according to degree
 // Output: a TriangleInfo for g. The ordering of edges in perEdge (of TriangleInfo) is that same as g.
 
-void clean (Graph G, VertexIdx* src, VertexIdx* dst, int *degree, float eps, std::vector<std::vector<VertexIdx> >& adj){
-        VertexIdx enums = G.nEdges;
-        VertexIdx vnum = G.nVertices;
+void clean (std::vector <VertexIdx>& src, std::vector <VertexIdx>& dst, int *degree, float eps, std::vector<std::vector<VertexIdx> >& adj){
+        //VertexIdx enums = G.nEdges;
+        //VertexIdx vnum = G.nVertices;
         float twt = 0;
         VertexIdx u, v;
 
-        VertexIdx sources[enums], dests[enums];
-        float weights[enums];
+        VertexIdx vnum = adj.size();
+        VertexIdx enums = src.size();
 
-        std::memcpy(G.srcs, sources, sizeof(VertexIdx)*G.nEdges);
-        std::memcpy(G.dsts, dests, sizeof(VertexIdx)*G.nEdges);
+        //VertexIdx sources[enums], dests[enums];
+        float weights[enums];
 
         for (VertexIdx i = 0; i<enums; i++){
             twt = 0;
             u = src[i];
             v = dst[i];
-            //printf("\n Edges is %ld %d \n", u,v);
+            //printf("\n Edges is %ld %ld \n", u,v);
             for (VertexIdx j =0; j<adj[u].size(); j++){
                 for (VertexIdx k =0; k<adj[v].size(); k++){
                     if (adj[u][j] == adj[v][k]){
@@ -169,7 +169,8 @@ void clean (Graph G, VertexIdx* src, VertexIdx* dst, int *degree, float eps, std
                     }
                 }
             }
-            if (twt<eps*eps){
+            if (twt<eps){
+                //printf("Flag\n");
                 for (VertexIdx j =0; j<adj[u].size(); j++){
                     if (adj[u][j] == v)
                         adj[u].erase(adj[u].begin()+j);
@@ -183,9 +184,10 @@ void clean (Graph G, VertexIdx* src, VertexIdx* dst, int *degree, float eps, std
         }
 }
 
-std::set <VertexIdx> extract (VertexIdx vnum, std::vector<std::vector<VertexIdx> >& adj, std::vector <VertexIdx>& rev, std::vector <VertexIdx>& indices, std::vector <VertexIdx>& flag){
+std::set <VertexIdx> extract (std::vector<std::vector<VertexIdx> >& adj, std::vector <VertexIdx>& rev, std::vector <VertexIdx>& indices, std::vector <VertexIdx>& flag){
 
         VertexIdx i, v1, v2, v, u; 
+        VertexIdx vnum = adj.size();
         std::set <VertexIdx> set1;
         for (VertexIdx blah = 0; blah < vnum; blah++){
             while(!(flag[indices[blah]]) || adj[rev[indices[blah]]].size()<3)

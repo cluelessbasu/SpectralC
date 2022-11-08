@@ -9,6 +9,10 @@
 #include <vector>
 #include <cstring>
 #include <stdio.h>
+#include <time.h>
+#include <numeric>
+#include <algorithm>
+#include <climits>
 using namespace Escape;
 
 // Structure that stores triangle information of graph
@@ -136,7 +140,24 @@ TriangleInfo wedgeEnumerator(CGraph *g)
 
    return ret;
 }
+std::vector <VertexIdx> sort_indexes(const int* deg, long int size) {
 
+  // initialize original index locations
+  std::vector <VertexIdx> v(std::vector<VertexIdx>(deg, deg + size));
+  std::vector<VertexIdx> idx(v.size());
+  std::iota(idx.begin(), idx.end(), 0);
+
+  // sort indexes based on comparing values in v
+  // using std::stable_sort instead of std::sort
+  // to avoid unnecessary index re-orderings
+  // when v contains elements of equal values 
+  std::stable_sort(idx.begin(), idx.end(),
+       [&v](size_t i1, size_t i2) {return v[i1] < v[i2];});
+  
+  
+
+  return idx;
+}
 
 // This wedge enumeration algorithm produces all triangles, and is more
 // efficient than the previous version. We use binary search to find edges, and also pass
@@ -149,14 +170,29 @@ void clean (std::vector <VertexIdx>& src, std::vector <VertexIdx>& dst, int *deg
         //VertexIdx vnum = G.nVertices;
         float twt = 0;
         VertexIdx u, v;
+        // declaring argument of time()
+        
 
         VertexIdx vnum = adj.size();
         VertexIdx enums = src.size();
 
-        //VertexIdx sources[enums], dests[enums];
-        float weights[enums];
+
+        for (VertexIdx i = 0; i<vnum; i++){
+            if (adj[i].size()<2){
+                for (VertexIdx j = 0; j<adj[i].size(); j++){
+                    VertexIdx k = adj[i][j];
+                    for (VertexIdx l = 0; l<adj[j].size(); l++){
+                        if (adj[j][l] == k){
+                            adj[j].erase(adj[j].begin()+l);
+                        }
+                    }
+                }
+                adj[i].clear();
+                }
+        }
 
         for (VertexIdx i = 0; i<enums; i++){
+           
             twt = 0;
             u = src[i];
             v = dst[i];
@@ -174,84 +210,109 @@ void clean (std::vector <VertexIdx>& src, std::vector <VertexIdx>& dst, int *deg
                 for (VertexIdx j =0; j<adj[u].size(); j++){
                     if (adj[u][j] == v)
                         adj[u].erase(adj[u].begin()+j);
-                }
+                    }
                 for (VertexIdx j =0; j<adj[v].size(); j++){
                     if (adj[v][j] == u)
                         adj[v].erase(adj[v].begin()+j);
                         
+                    }   
                 }
-            }
+                }
         }
-}
+    
 
-std::set <VertexIdx> extract (std::vector<std::vector<VertexIdx> >& adj, std::vector <VertexIdx>& rev, std::vector <VertexIdx>& indices, std::vector <VertexIdx>& flag){
 
-        VertexIdx i, v1, v2, v, u; 
+std::set <VertexIdx> extract (std::vector<std::vector<VertexIdx> >& adj, std::vector <VertexIdx>& rev,  std::vector <VertexIdx>& flag, std::vector <VertexIdx>& index){
+
+        VertexIdx i, v1, v2, v, u, k, j;
+        int degs[adj.size()];
         VertexIdx vnum = adj.size();
-        std::set <VertexIdx> set1;
-        for (VertexIdx blah = 0; blah < vnum; blah++){
-            while(!(flag[indices[blah]]) || adj[rev[indices[blah]]].size()<3)
-                            {blah++;}
-            VertexIdx i_n = indices[blah];
-
-            i = rev[i_n];
-            set1.insert(i);
-
-            for (VertexIdx j= 0; j<adj[i].size(); j++){
-                if (adj[j].size()<2*adj[i].size())
-                    set1.insert(j);
-            }
-
-            for (EdgeIdx j = 0; j<set1.size(); ++j){
-                v1 = *std::next(set1.begin(), j);
-                for (EdgeIdx k = 0; k<adj[v1].size(); k++){
-                    set1.insert(adj[v1][k]);
-                }
-            }
-
-            for (EdgeIdx j = 0; j<set1.size(); ++j){
-                int deg = 0;
-                v1 = *std::next(set1.begin(), j);
-                for (EdgeIdx k = 0; k<set1.size(); ++k){
-                    v2 = *std::next(set1.begin(), k);
-                    for (EdgeIdx l=0; l<adj[v1].size(); ++l){
-                        if (adj[v1][l] == v2)
-                            deg++;
-                    }
-                    if (!(deg>adj[v1].size()/2)){
-                        set1.erase(v1);
-                    }
-                }
-
-            }
-
-        for (VertexIdx i = 0; i < adj.size(); i++){
-
-               for (EdgeIdx j = 0; j<set1.size(); j++){
-
-                    v = *std::next(set1.begin(), j);
-
-                    for (VertexIdx k = 0; k<adj[i].size(); k++){
-                        if (v == adj[i][k])
-                            adj[i].erase(adj[i].begin()+k);
-                    }
-
-               }
-
-        } 
-
-
-        for (EdgeIdx j = 0; j<set1.size(); j++){
-
-                v = *std::next(set1.begin(), j);
-                adj.erase(adj.begin()+v);
-                flag[rev[v]] = 0;
-
+        std::set <VertexIdx> sets, set1;
+        time_t my_time = time(NULL);
+        //std::vector <VertexIdx> index(adj.size());
+/*
+        for (i=0; i<adj.size(); i++){
+            degs[i] = adj[i].size() ;
         }
+        index = sort_indexes (degs, adj.size());
+*/
+        for (VertexIdx blah = 0; blah < vnum; blah++){
+           
+            if (adj[index[blah]].size()>2){
+                    i = index[blah];
+            
+                    sets.insert(i);
+                    set1.insert(i);
+                    //printf("\n %ld neigbors for this vertex %ld at position %ld", adj[i].size(), i, blah);
 
-        
-    return set1;
-    }    
+                    for (VertexIdx j= 0; j<adj[i].size(); j++){
+                        //if (adj[j].size()<2*adj[i].size())
+                            sets.insert(adj[i][j]);
+                    }//printf("\n 1 hop added at %s\n", ctime(&my_time));
+
+                    VertexIdx potential = 0;
+
+                    for (j = 0; j<sets.size(); ++j){
+                        v1 = *std::next(sets.begin(), j);
+                        for (k = 0; k<adj[v1].size(); k++){
+                            set1.insert(v1);
+                            set1.insert(adj[v1][k]);
+                            //potential+= adj[adj[v1][k]].size();
+                            
+                        }
+                    }
+                    
+                    //printf("\n 2 hop added at %s\n", ctime(&my_time));
+
+                    //printf("\n Currently size is %ld, and sum of degrees is %ld", set1.size(), adj[i].size()+potential);
+                    fflush(stdout);
+
+                    if (set1.size()>3){
+                        for (j = 0; j<set1.size(); ++j){
+                            int deg = 0;
+                            v1 = *std::next(set1.begin(), j);
+                            for (EdgeIdx k = 0; k<set1.size(); ++k){
+                                v2 = *std::next(set1.begin(), k);
+                                //printf("\n Size %ld, Tot vtcs %ld, Vtx chosen %ld", adj[v1].size(), adj.size(),v1);
+                                for (EdgeIdx l=0; l<adj[v1].size(); ++l){
+                                    if (adj[v1][l] == v2)
+                                        deg++;
+                                }
+                                if (!(deg>adj[v1].size()/2)){
+                                    set1.erase(v1);
+                                }
+                            }
+                    }
+
+                    }//printf("\n 2 hop pruned at%s", ctime(&my_time));
+
+                for (VertexIdx i = 0; i < adj.size(); i++){
+
+                    for (EdgeIdx j = 0; j<set1.size(); j++){
+
+                            v = *std::next(set1.begin(), j);
+
+                            for (VertexIdx k = 0; k<adj[i].size(); k++){
+                                if (v == adj[i][k])
+                                    adj[i].erase(adj[i].begin()+k);
+                            }
+
+                    }
+
+                } //printf("\n adjacency updated");
+
+
+                for (EdgeIdx j = 0; j<set1.size(); j++){
+
+                        v = *std::next(set1.begin(), j);
+                        //adj.erase(adj.begin()+v);
+                        flag[v] = 0;
+
+                } //printf("\n Extract complete at %s, cluster has size %ld", ctime(&my_time),set1.size());
+
+            printf("\n Outsize: %ld", set1.size()+1);    
+            return set1;
+            }   } 
 }
 
 TriangleInfo2 cleaner(CGraph *gout, int *degree, float eps, std::vector<std::vector<VertexIdx> >& adj) //fix output format

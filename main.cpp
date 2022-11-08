@@ -13,107 +13,41 @@
 #include <cstdint>
 #include <cstring>
 #include <numeric>
+#include <time.h>
+#include <chrono>
  
 
 //#include "FourVertex.h"
 //#include "Conversion.h"
 //#include "GetAllCounts.h"
 
+
+
 using namespace Escape;
-/*
-void addEdge(vector<int> adj[], int u, int v)
-{
-    adj[u].push_back(v);
-    adj[v].push_back(u);
-}
 
-// A utility function to delete an edge in an
-// undirected graph.
-void delEdge(vector<int> adj[], int u, int v)
-{
-    // Traversing through the first vector list
-    // and removing the second element from it
-    for (int i = 0; i < adj[u].size(); i++) {
-        if (adj[u][i] == v) {
-            adj[u].erase(adj[u].begin() + i);
-            break;
-        }  
-    }
- 
-    // Traversing through the second vector list
-    // and removing the first element from it
-    for (int i = 0; i < adj[v].size(); i++) {
-        if (adj[v][i] == u) {
-            adj[v].erase(adj[v].begin() + i);
-            break;
-        }
-    }
-}
-*/
-
-std::vector <VertexIdx> sort_indexes(const int* deg, long int size) {
-
-  // initialize original index locations
-  std::vector <VertexIdx> v(std::vector<VertexIdx>(deg, deg + size));
-  std::vector<VertexIdx> idx(v.size());
-  std::iota(idx.begin(), idx.end(), 0);
-
-  // sort indexes based on comparing values in v
-  // using std::stable_sort instead of std::sort
-  // to avoid unnecessary index re-orderings
-  // when v contains elements of equal values 
-  std::stable_sort(idx.begin(), idx.end(),
-       [&v](size_t i1, size_t i2) {return v[i1] < v[i2];});
-  
-  
-
-  return idx;
-}
-
-
-
-//int main(int argc, char *argv[])
 int main()
 {Graph g, g_temp;
+
+ auto t1 = time(NULL);
  std::vector <VertexIdx> sources, dests;
  std::vector <VertexIdx> pVert;
  TriangleInfo2 inf;
  float eps = 0.1;
  VertexIdx i, j, k, l, v, vert, number, counts, mapped;
  std::set<VertexIdx> out, out_f;
- std::list<std::set<VertexIdx> > output;
- std::vector<int> removals;
+ //std::list<std::set<VertexIdx> > output;
+ std::vector<int> removals, rem_temp;
  long int counter = 0, pos = 0;
- VertexIdx inter = 0;
+ VertexIdx inter = 0, current = 0;
+ VertexIdx avg_s=0, min_s=0, max_s=0;
+ std::vector <VertexIdx> index;
  
  printf("Compiling started\n");
-/*
-  if (loadGraph(argv[1], g, 1, IOFormat::escape)){
-    printf("blah");
-    exit(1);
-  }
-*/
-  loadGraph("ca-AstroPh.edges", g, 1, IOFormat::escape);
+ loadGraph("ca-AstroPh.edges", g, 1, IOFormat::escape);
   
 
   printf("Loaded graph\n");
-  //CGraph cg = makeCSR(g);
-  //cg.sortById();
-  //printf("Converted to CSR\n");
-
-  //printf("Relabeling graph\n");
-  //CGraph cg_relabel; 
-  //cg_relabel  = cg.renameByDegreeOrder();
-  //cg_relabel.sortById();
-  //printf("Hehe\n");
-  //printf("Creating DAG\n");
-  //CDAG dag = degreeOrdered(&cg_relabel);
-
-  //(dag.outlist).sortById();
-  //(dag.inlist).sortById();
   
-  //cg = cg_relabel.copy();
-
   number = g.nVertices;
 
   printf("\n The number of vertices is %ld\n", number);
@@ -152,42 +86,19 @@ int main()
     //printf("%ld, %ld\n", j,k);
   }
 
-  int s1=0, s2=0;
-        for (i =0; i<g.nEdges; i++){
-            if (g.srcs[i]==0 && g.dsts[i]==0)
-                s1++;
-        }
-  printf("\nHere are s1 and s2: %d, %d", s1, s2);
-  printf("\n Number of edges is %ld \n", g.nEdges);
-  printf("\n Here's an example:\n");
-  
-  for (i = 0; i<adj[324].size(); ++i){
-    printf ("%ld, ", adj[324][i]);
-  }
-  printf("\n");
-  printf("\n");
-  for (i = 0; i<adj[462].size(); ++i){
-    printf ("%ld, ", adj[462][i]);
-  }
-  printf("\n");
-
-  printf("\nTheir degrees are: %ld, %ld \n", adj[324].size(), adj[462].size());
-  
-  for (i = 0; i<adj.size(); ++i){
+ for (i = 0; i<adj.size(); ++i){
     degree[i] = adj[i].size();
     if (degree[i]==0){
         //printf("%d",i);
         zeros++;
     }
   }
+  index = sort_indexes (degree, adj.size());
 
- printf("\nTheir degrees are: %d, %d \n", degree[324], degree[462]);
  int edges = g.nEdges;
- std::cout << "Max is " << *std::max_element(degree, degree+g.nVertices)<< std::endl;
+ std::cout << "\nMax is " << *std::max_element(degree, degree+g.nVertices)<< std::endl;
  std::cout << "Min is " << *std::min_element(degree, degree+g.nVertices)<< std::endl;
 
-
- std::vector <VertexIdx> indices = sort_indexes (degree, adj.size());
 
  printf("%d many zeros of %ld vertices\n",zeros, g.nVertices);
 
@@ -210,148 +121,165 @@ int main()
 
  //printf("\n i is %ld",i);
 
- s1=0; 
- s2=0;
-for (i =0; i<g.nEdges; i++){
-    if (src[i]==0 && dst[i]==0)
-        s1++;
-}
-
-printf("\nHere are s1 and s2: %d, %d", s1, s2);
-
-//vnum = g.nVertices;
-//enums = g.nEdges;
- 
- //loop begins
-
- //change to adj functions
-  int repeat = 0;
-  printf("\n Clean begin\n");
+ int repeat = 0;
+ printf("\n %ld vertices left, adj size: %ld ", counts, adj.size());
+ auto t2 = time(NULL);
+  printf("\n Clean begin at %s\n", ctime(&t2) );
   while (counts){
     repeat = 0;
    
-    printf("\n %ld vertices left", counts);
-    while (repeat<5){
+    //printf("\n %ld vertices left", counts);
+    while (repeat<6){
         
         repeat++;
 
         int remove_e = 0;
+        rem_temp.clear();
         
         for (i=0; i<adj.size(); ++i){
         
                 for (j=0; j<adj[i].size(); ++j){
                     sources.push_back(i);
-                    sources.push_back(adj[i][j]);
+                    //sources.push_back(adj[i][j]);
                     dests.push_back(adj[i][j]);
-                    dests.push_back(i);
+                    //dests.push_back(i);
                 
             }
-            
-
-            if (counter || repeat > 1)
+            /*      
+            if (repeat > 1 && counter)
             {
                 if (adj[i].size()==0){
                     //printf("\n i is %ld",i);
-                    removals.push_back(i);
+                    removals.push_back(hashmap[i].back());
+                    rem_temp.push_back(i);
                     pos = hashmap[i].back();
                     flag[pos] = 0;
                     remove_e+= adj[i].size();
+                    //printf ("\n Vetrex %ld removed", i);
             }
-            }}
+            }*/
+        }
+        if (sources.size()==0)
+            break;
+        clean(sources, dests, degree, eps, adj);
         
-    
-        for (i =0; i<removals.size(); ++i){
-            adj.erase(adj.begin()+removals[i]-i);
+        //printf("\n%ld vertices  removed\n", rem_temp.size());
+        
+        /*
+        for (i =0; i<rem_temp.size(); ++i){
+            adj.erase(adj.begin()+rem_temp[i]-i);
             //printf("%ld ",removals[i]);
         }
-        counts = adj.size();
+        counts = adj.size();*/
 
         VertexIdx enums = 0;
+        std::sort(removals.begin(), removals.end());
+        std::sort(rem_temp.begin(), rem_temp.end());
 
         for (VertexIdx i =0; i<adj.size(); i++){
             enums += adj[i].size();
         }
-
-        //VertexIdx* src = &sources[0]; 
-        //VertexIdx* dst = &dests[0];
-
-
-        //g = newGraph(adj.size(), sources.size());
-
-        //g_temp.nVertices = adj.size();
-        //g_temp.nEdges = sources.size();
-
-        
-
-        //std::memcpy(g.srcs, src, sizeof(VertexIdx)*g.nEdges);
-        //std::memcpy(g.dsts, dst, sizeof(VertexIdx)*g.nEdges);
-
         int k = 0;
 
-        if ((repeat>1 || counter) && removals.size()>0){
+        if (removals.size()>0){
             for (i=0; i<number; ++i){
                 inter = removals[k];
                 mapped = reverse[inter];
+                current = reverse[i];
 
-                if (mapped<i){
+                if (mapped==i){
 
-                    hashmap[mapped-k].pop_back();
-                    hashmap[mapped-k].push_back(i);
-                    reverse[i] = mapped-k;
+                    k++;
+                    
                     }
                 else {
-                    if(hashmap[mapped].back()==i){
-                        k++;
-                        //printf("\n %ld %ld %d %ld", inter, i, k, removals.size());
+                    if(mapped<i){
+                        hashmap[i-k].pop_back();
+                        hashmap[i-k].push_back(i);
+                        reverse[i] = i-k;
                     }
                 }
             }
         }
         
-        clean(sources, dests, degree, eps, adj);
-        printf("\n%ld vertices  removed\n", number-adj.size());
+        
+        
 
         //cg = makeCSR(g_temp);
         if (counter){
-            repeat = 5;
+            repeat = 6;
             
         }
 
         sources.clear();
         dests.clear();
-        removals.clear();
+        rem_temp.clear();
 
         }
+        t2 = time(NULL);
+        printf ("\n Graph is cleaned, new graph has %ld vertices at %s\n", adj.size(), ctime(&t2));
+        for (i=0; i<adj.size(); ++i){
         
-        printf ("\n Graph is cleaned, new graph has %ld vertices and %ld edges\n", g.nVertices, g.nEdges);
-        //cg.sortById();
-        //cg_relabel = cg.renameByDegreeOrder();
-        //cg_relabel.sortById();
-        //dag = degreeOrdered(&cg_relabel);
-        //(dag.outlist).sortById();
-        //(dag.inlist).sortById();
-        //cg = cg_relabel.copy();
-        out = extract(adj, reverse, indices, flag);
-        printf ("\nWe got here: output size is %ld", out.size());
+                for (j=0; j<adj[i].size(); ++j){
+                    sources.push_back(i);
+                    //sources.push_back(adj[i][j]);
+                    dests.push_back(adj[i][j]);
+                    //dests.push_back(i);
+                
+            }}
+            
+/*
+            if (counter || repeat > 1)
+            {
+                if (adj[i].size()==0){
+                    //printf("\n i is %ld",i);
+                    removals.push_back(hashmap[i].back());
+                    rem_temp.push_back(i);
+                    pos = hashmap[i].back();
+                    flag[pos] = 0;
+                    //printf ("\n Vetrex %ld removed", i);
+            }
+            }}
+        
+        for (i =0; i<rem_temp.size(); ++i){
+            adj.erase(adj.begin()+rem_temp[i]-i);
+            //printf("%ld ",removals[i]);
+        }*/
+        
+        
+
+
+        out = extract(adj, reverse,  flag, index);
+        if (!counter)
+            min_s = out.size();
+        //printf ("\nWe got here: output size is %ld", out.size());
+        if (out.size() && out.size()>max_s)
+            max_s = out.size();
+        else if (out.size() && out.size()<min_s)
+            min_s = out.size();
+        avg_s += out.size();
         out_f.clear();
 
         for (i=0; i<out.size(); ++i ){
-            out_f.insert(hashmap[i].back());
-            fprintf(f, "%ld,", hashmap[i].back());
-            printf("\n %ld,", hashmap[i].back());
-            flag[hashmap[i].back()] = 0;
+            out_f.insert(i);
+            fprintf(f, "%ld,", i);
+            //printf("\n %ld,", hashmap[i].back());
+            flag[i] = 0;
         }
         counter++;
         //counts -= out.size();
-        output.push_back(out_f);
+        //output.push_back(out_f);
         fprintf(f, "\nEnd of cluster %ld,", counter);
-        printf("\nEnd of cluster %ld,", counter);
+        printf("\nEnd of cluster %ld with %ld vertices", counter, out.size()+1);
         //delete &g_temp, &cg, &cg_relabel;
 
         
     }
 
-
+  printf("\n Min: %ld, Max %ld, Avg %ld, %ld clusters", min_s, max_s, avg_s/counter, counter);
+  t2 = time(NULL);
+  printf("\n%ld vertices  removed at %s\n", number-adj.size(),ctime(&t2));
 
   fclose(f);
+  return 0;
 }

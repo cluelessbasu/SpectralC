@@ -273,6 +273,15 @@ int main()
         printf("\nEnd of cluster %ld with %ld vertices", counter, out.size()+1);
         //delete &g_temp, &cg, &cg_relabel;
 
+        if (out.size()== 0){
+            VertexIdx edges = 0;
+            for (i =0; i<adj.size(); i++){
+                edges+= adj[i].size();
+            }
+            if (edges ==0)
+                break;
+        }
+
         
     }
 

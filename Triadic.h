@@ -225,7 +225,7 @@ void clean (std::vector <VertexIdx>& src, std::vector <VertexIdx>& dst, int *deg
 std::set <VertexIdx> extract (std::vector<std::vector<VertexIdx> >& adj, std::vector <VertexIdx>& rev,  std::vector <VertexIdx>& flag, std::vector <VertexIdx>& index){
 
         VertexIdx i, v1, v2, v, u, k, j;
-        int degs[adj.size()];
+        int* degs = new int[adj.size()];
         VertexIdx vnum = adj.size();
         std::set <VertexIdx> sets, set1;
         time_t my_time = time(NULL);

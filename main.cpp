@@ -15,6 +15,7 @@
 #include <numeric>
 #include <time.h>
 #include <chrono>
+#include <fstream>
  
 
 //#include "FourVertex.h"
@@ -43,7 +44,7 @@ int main()
  std::vector <VertexIdx> index;
  
  printf("Compiling started\n");
- loadGraph("ca-AstroPh.edges", g, 1, IOFormat::escape);
+ loadGraph("Data/cit-Patents.edges", g, 1, IOFormat::escape);
   
 
   printf("Loaded graph\n");
@@ -59,7 +60,7 @@ int main()
   std::vector<std::vector <VertexIdx> > hashmap(number);
   
   printf("The length of the adjacency list is %ld", adj.size());
-
+  fflush(stdin);
   double nonInd[4];
 
   VertexIdx* dst  = (VertexIdx*)malloc(sizeof(VertexIdx)*g.nEdges);
@@ -68,7 +69,7 @@ int main()
   std::memcpy(src, g.srcs, sizeof(VertexIdx)*g.nEdges);
   std::memcpy(dst, g.dsts, sizeof(VertexIdx)*g.nEdges);
 
-  int degree[g.nVertices];
+  
   int zeros = 0;
   
   //printf("\nShould repeat %ld times", sizeof(src)/sizeof(src[0]));
@@ -86,6 +87,8 @@ int main()
     //printf("%ld, %ld\n", j,k);
   }
 
+ delGraph(g);
+ int* degree =  new int[number];
  for (i = 0; i<adj.size(); ++i){
     degree[i] = adj[i].size();
     if (degree[i]==0){
@@ -102,14 +105,8 @@ int main()
 
  printf("%d many zeros of %ld vertices\n",zeros, g.nVertices);
 
-  counts =g.nVertices;
-  FILE* f = fopen("out.txt","w");
-  if (!f)
-  {
-      printf("could not write to output to out.txt\n");
-      return 0;
-  }
-
+ counts =g.nVertices;
+ std::ofstream files ("out.txt");
   
  std::vector <VertexIdx> flag (counts);
  std::vector <VertexIdx> reverse (counts);
@@ -260,25 +257,25 @@ int main()
         avg_s += out.size();
         out_f.clear();
 
-        for (i=0; i<out.size(); ++i ){
-            out_f.insert(i);
-            fprintf(f, "%ld,", i);
+        for (const VertexIdx &v :out){
+            //out_f.insert(i);
+            files<<v<<',';
             //printf("\n %ld,", hashmap[i].back());
-            flag[i] = 0;
+            flag[v] = 0;
         }
         counter++;
         //counts -= out.size();
         //output.push_back(out_f);
-        fprintf(f, "\nEnd of cluster %ld,", counter);
+        files<<"\nEnd of cluster "<< counter<<"\n";
         printf("\nEnd of cluster %ld with %ld vertices", counter, out.size()+1);
         //delete &g_temp, &cg, &cg_relabel;
 
-        if (out.size()== 0){
+        if (out.size()<2){
             VertexIdx edges = 0;
             for (i =0; i<adj.size(); i++){
                 edges+= adj[i].size();
             }
-            if (edges ==0)
+            if (edges)
                 break;
         }
 
@@ -289,6 +286,6 @@ int main()
   t2 = time(NULL);
   printf("\n%ld vertices  removed at %s\n", number-adj.size(),ctime(&t2));
 
-  fclose(f);
+  files.close();
   return 0;
 }

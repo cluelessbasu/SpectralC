@@ -44,7 +44,7 @@ int main()
  std::vector <VertexIdx> index;
  
  printf("Compiling started\n");
- loadGraph("Data/cit-Patents.edges", g, 1, IOFormat::escape);
+ loadGraph("ca-AstroPh.edges", g, 1, IOFormat::escape);
   
 
   printf("Loaded graph\n");
@@ -106,7 +106,7 @@ int main()
  printf("%d many zeros of %ld vertices\n",zeros, g.nVertices);
 
  counts =g.nVertices;
- std::ofstream files ("out.txt");
+ std::ofstream files ("ca-AstroPh_out.txt");
   
  std::vector <VertexIdx> flag (counts);
  std::vector <VertexIdx> reverse (counts);
@@ -126,7 +126,7 @@ int main()
     repeat = 0;
    
     //printf("\n %ld vertices left", counts);
-    while (repeat<6){
+    while (repeat<10){
         
         repeat++;
 
@@ -142,69 +142,14 @@ int main()
                     //dests.push_back(i);
                 
             }
-            /*      
-            if (repeat > 1 && counter)
-            {
-                if (adj[i].size()==0){
-                    //printf("\n i is %ld",i);
-                    removals.push_back(hashmap[i].back());
-                    rem_temp.push_back(i);
-                    pos = hashmap[i].back();
-                    flag[pos] = 0;
-                    remove_e+= adj[i].size();
-                    //printf ("\n Vetrex %ld removed", i);
-            }
-            }*/
+            
         }
         if (sources.size()==0)
             break;
         clean(sources, dests, degree, eps, adj);
         
-        //printf("\n%ld vertices  removed\n", rem_temp.size());
-        
-        /*
-        for (i =0; i<rem_temp.size(); ++i){
-            adj.erase(adj.begin()+rem_temp[i]-i);
-            //printf("%ld ",removals[i]);
-        }
-        counts = adj.size();*/
-
-        VertexIdx enums = 0;
-        std::sort(removals.begin(), removals.end());
-        std::sort(rem_temp.begin(), rem_temp.end());
-
-        for (VertexIdx i =0; i<adj.size(); i++){
-            enums += adj[i].size();
-        }
-        int k = 0;
-
-        if (removals.size()>0){
-            for (i=0; i<number; ++i){
-                inter = removals[k];
-                mapped = reverse[inter];
-                current = reverse[i];
-
-                if (mapped==i){
-
-                    k++;
-                    
-                    }
-                else {
-                    if(mapped<i){
-                        hashmap[i-k].pop_back();
-                        hashmap[i-k].push_back(i);
-                        reverse[i] = i-k;
-                    }
-                }
-            }
-        }
-        
-        
-        
-
-        //cg = makeCSR(g_temp);
         if (counter){
-            repeat = 6;
+            repeat = 10;
             
         }
 
@@ -225,26 +170,6 @@ int main()
                 
             }}
             
-/*
-            if (counter || repeat > 1)
-            {
-                if (adj[i].size()==0){
-                    //printf("\n i is %ld",i);
-                    removals.push_back(hashmap[i].back());
-                    rem_temp.push_back(i);
-                    pos = hashmap[i].back();
-                    flag[pos] = 0;
-                    //printf ("\n Vetrex %ld removed", i);
-            }
-            }}
-        
-        for (i =0; i<rem_temp.size(); ++i){
-            adj.erase(adj.begin()+rem_temp[i]-i);
-            //printf("%ld ",removals[i]);
-        }*/
-        
-        
-
 
         out = extract(adj, reverse,  flag, index);
         if (!counter)
@@ -267,7 +192,7 @@ int main()
         //counts -= out.size();
         //output.push_back(out_f);
         files<<"\nEnd of cluster "<< counter<<"\n";
-        printf("\nEnd of cluster %ld with %ld vertices", counter, out.size()+1);
+        printf("\nEnd of cluster %ld with %ld vertices", counter, out.size());
         //delete &g_temp, &cg, &cg_relabel;
 
         if (out.size()<2){

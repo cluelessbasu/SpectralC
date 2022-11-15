@@ -159,12 +159,6 @@ std::vector <VertexIdx> sort_indexes(const int* deg, long int size) {
   return idx;
 }
 
-// This wedge enumeration algorithm produces all triangles, and is more
-// efficient than the previous version. We use binary search to find edges, and also pass
-// the original graph to cut down on queries.
-// Input: a pointer gout to a CGraph labeled according to degree
-// Output: a TriangleInfo for g. The ordering of edges in perEdge (of TriangleInfo) is that same as g.
-
 void clean (std::vector <VertexIdx>& src, std::vector <VertexIdx>& dst, int *degree, float eps, std::vector<std::vector<VertexIdx> >& adj){
         //VertexIdx enums = G.nEdges;
         //VertexIdx vnum = G.nVertices;
@@ -229,13 +223,7 @@ std::set <VertexIdx> extract (std::vector<std::vector<VertexIdx> >& adj, std::ve
         VertexIdx vnum = adj.size();
         std::set <VertexIdx> sets, set1;
         time_t my_time = time(NULL);
-        //std::vector <VertexIdx> index(adj.size());
-/*
-        for (i=0; i<adj.size(); i++){
-            degs[i] = adj[i].size() ;
-        }
-        index = sort_indexes (degs, adj.size());
-*/
+        
         for (VertexIdx blah = 0; blah < vnum; blah++){
            
             if (adj[index[blah]].size()>2){
@@ -250,7 +238,7 @@ std::set <VertexIdx> extract (std::vector<std::vector<VertexIdx> >& adj, std::ve
                             sets.insert(adj[i][j]);
                     }//printf("\n 1 hop added at %s\n", ctime(&my_time));
 
-                    VertexIdx potential = 0;
+                    //VertexIdx potential = 0;
 
                     for (j = 0; j<sets.size(); ++j){
                         v1 = *std::next(sets.begin(), j);
@@ -262,9 +250,6 @@ std::set <VertexIdx> extract (std::vector<std::vector<VertexIdx> >& adj, std::ve
                         }
                     }
                     
-                    //printf("\n 2 hop added at %s\n", ctime(&my_time));
-
-                    //printf("\n Currently size is %ld, and sum of degrees is %ld", set1.size(), adj[i].size()+potential);
                     fflush(stdout);
 
                     if (set1.size()>3){
@@ -310,9 +295,12 @@ std::set <VertexIdx> extract (std::vector<std::vector<VertexIdx> >& adj, std::ve
 
                 } //printf("\n Extract complete at %s, cluster has size %ld", ctime(&my_time),set1.size());
 
-            printf("\n Outsize: %ld", set1.size()+1);    
+                
+            set1 = Union(set1, sets);
+            printf("\n Outsize: %ld", set1.size());
             return set1;
-            }   } 
+            }   
+        } 
 }
 
 TriangleInfo2 cleaner(CGraph *gout, int *degree, float eps, std::vector<std::vector<VertexIdx> >& adj) //fix output format

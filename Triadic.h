@@ -270,7 +270,7 @@ std::set <VertexIdx> extract (std::vector<std::vector<VertexIdx> >& adj, std::ve
                     }
 
                     }//printf("\n 2 hop pruned at%s", ctime(&my_time));
-
+                set1 = Union(set1, sets);
                 for (VertexIdx i = 0; i < adj.size(); i++){
 
                     for (EdgeIdx j = 0; j<set1.size(); j++){
@@ -296,7 +296,7 @@ std::set <VertexIdx> extract (std::vector<std::vector<VertexIdx> >& adj, std::ve
                 } //printf("\n Extract complete at %s, cluster has size %ld", ctime(&my_time),set1.size());
 
                 
-            set1 = Union(set1, sets);
+            
             printf("\n Outsize: %ld", set1.size());
             return set1;
             }   
